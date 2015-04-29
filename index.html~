@@ -1,0 +1,6 @@
+<head>
+</head>
+<body>
+<canvas id="board1" width="500" height="500" style="boarder:1px solid #000000"></canvas>
+  
+</body>
