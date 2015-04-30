@@ -1,8 +1,0 @@
-var ctx = $('board1').getContext("2d");
-
-for (var i=0;i<400;i+=50){
-    ctx.moveTo(0,i);
-    ctx.lineTo(400,i);
-    ctx.moveTo(i,0);
-    ctx.lineTo(i,400);
-}

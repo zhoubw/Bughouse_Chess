@@ -1,10 +1,7 @@
-//var c = document.getElementById("board1");
-//var ctx = c.getContext('2d');
 var oldx = [0,0];
 var oldy = [0,0];
 var xplace = ['A','B','C','D','E','F','G','H'];
 var yplace = ['8','7','6','5','4','3','2','1'];
-//console.log($('board1'))
 var makeLines = function(ctx){
     for (var i=0;i<400;i+=50){
         ctx.moveTo(0,i);
@@ -82,6 +79,7 @@ makeSquares(ctx1,true);
 makeSquares(ctx2,false);
 
 $('#board1').on('click', function(e){
+    /*
     if (oldx[0]%100==50){
         if (oldy[0]%100==0){
             ctx1.fillStyle = "#FF9999";
@@ -99,16 +97,19 @@ $('#board1').on('click', function(e){
             ctx1.fillRect(oldx+1,oldy+1,48,48);
         }
     }
+    */ //for resetting square color
     var x = e.pageX - (e.pageX%50);
     var y = e.pageY - (e.pageY%50);
     ctx1.fillStyle = "#00FF00";
     ctx1.fillRect(x+1,y+1,48,48);
     oldx[0] = x;
     oldy[0] = y;
-    console.log(xplace[x/50]+yplace[y/50]);
+    $('#place').html(xplace[x/50].toLowerCase() + yplace[y/50]);
+    console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
 });
 
 $('#board2').on('click', function(e){
+    /*
     if (oldx[1]%100==50){
         if (oldy[1]%100==50){
             ctx2.fillStyle = "#FF9999";
@@ -126,12 +127,14 @@ $('#board2').on('click', function(e){
             ctx2.fillRect(oldx+1,oldy+1,48,48);
         }
     }
+    */ //for resetting square color
     var x = e.pageX - (e.pageX%50)-400;
     var y = e.pageY - (e.pageY%50);
     ctx2.fillStyle = "#00FF00";
     ctx2.fillRect(x+1,y+1,48,48);
     oldx[1] = x;
     oldy[1] = y;
+    $('#place').html(xplace[7-(x/50)] + yplace[7-(y/50)]);
     console.log(xplace[7-(x/50)]+yplace[7-(y/50)]);
 });
 console.log('done');
