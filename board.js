@@ -2,8 +2,11 @@ var oldx = [0,0];
 var oldy = [0,0];
 var xplace = ['A','B','C','D','E','F','G','H'];
 var yplace = ['8','7','6','5','4','3','2','1'];
+var ctx1 = $('#board1')[0].getContext("2d");
+var ctx2 = $('#board2')[0].getContext("2d");
+
 var makeLines = function(ctx){
-    for (var i=0;i<400;i+=50){
+    for (var i=0;i<=400;i+=50){
         ctx.moveTo(0,i);
         ctx.lineTo(400,i);
         ctx.stroke();
@@ -13,30 +16,16 @@ var makeLines = function(ctx){
     }
 };
 
-var makeSquares = function(ctx,bool){
+var makeSquares = function(ctx){
     ctx.fillStyle="#FF9999"
-    if (bool){
-        for (var i = 1;i < 400;i+=50){
-            if (i%100==1){
-                for (var j=51;j < 400;j+=100){
-                    ctx.fillRect(i,j,48,48);
-                }
-            }else{
-                for (var j=1;j < 400;j+=100){
-                    ctx.fillRect(i,j,48,48);
-                }
+    for (var i = 1;i < 400;i+=50){
+        if (i%100==1){
+            for (var j=51;j < 400;j+=100){
+                ctx.fillRect(i,j,48,48);
             }
-        }
-    }else{
-        for (var i = 1;i < 400;i+=50){
-            if (i%100==1){
-                for (var j=1;j < 400;j+=100){
-                    ctx.fillRect(i,j,48,48);
-                }
-            }else{
-                for (var j=51;j < 400;j+=100){
-                    ctx.fillRect(i,j,48,48);
-                }
+        }else{
+            for (var j=1;j < 400;j+=100){
+                ctx.fillRect(i,j,48,48);
             }
         }
     }
@@ -71,12 +60,76 @@ var clicker = function(e,ctx){
 }
 */
 
-var ctx1 = $('#board1')[0].getContext("2d");
-var ctx2 = $('#board2')[0].getContext("2d");
+
+var hSquare(coord){
+    var lett = coord.substr(0,0);
+    var num = coord.substr(1,1);
+    var xc = 0;
+    var xy = 0;
+    if (lett>='a'&&lett<='h'){
+	ctx1.fillStyle="#00FF00"
+	switch (lett){
+	case 'a':
+	    xc=1;
+	    break;
+	case 'b':
+	    xc=51;
+	    break;
+	case 'c':
+	    xc=101;
+	    break;
+	case 'd':
+	    xc=151;
+	    break;
+	case 'e':
+	    xc=201;
+	    break;
+	case 'f':
+	    xc=251;
+	    break;
+	case 'g':
+	    xc=301;
+	    break;
+	case 'h':
+	    xc=351;
+	    break;
+	}
+	switch(num){
+	case '1':
+	    yc=351;
+	    break;
+	case '2':
+	    yc=301;
+	    break;
+	case '3':
+	    yc=251;
+	    break;
+	case '4':
+	    yc=201;
+	    break;
+	case '5':
+	    yc=151;
+	    break;
+    }else{
+
+    }
+}
+
+
+var loadPieces = function(board,context){
+    for (var i =0;i<8;i++){
+	for (var j=0;j<8;j++){
+	    //need to wait until the format for the board storage is finished
+	    j=j;
+	}
+    }
+}
+
+
 makeLines(ctx1);
 makeLines(ctx2);
-makeSquares(ctx1,true);
-makeSquares(ctx2,false);
+makeSquares(ctx1);
+makeSquares(ctx2);
 
 $('#board1').on('click', function(e){
     /*
