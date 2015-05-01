@@ -68,8 +68,18 @@ function Piece (color, type, board, column, row) {
 	return col + r.toString();
 	
     };
-    this.move = function() {
-
+    this.move = function(column, row) {
+	for (var i=0; i<this.availableMoves.length; i++) {
+	    var square = this.availableMoves[i];
+	    if (square[0] == column && square[1] == row) {
+		var oldColumn = this.column;
+		var oldRow = this.row;
+		this.column = square[0];
+		this.row = square[1];
+		this.board[oldColumn][oldRow] = 0;
+		//capture, enp. unfinished!!
+	    }
+	}
     };
     switch(type) {
     case PAWN:
