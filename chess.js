@@ -46,7 +46,7 @@ function Player (color, position, opponent, partner) {
     this.partner = partner;
     this.color = color;
     
-    this.side = [];
+    this.spare = [];
     this.time = 180.0;
 
     this.setOpponent = function(o) {
@@ -101,12 +101,21 @@ function Piece (player, color, type, board, column, row) {
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
+		//capture, enp. unfinished!!
+		if (square[2] == CAPTURE) {
+		    this.player.partner.spare.push(this.board[square[0]][square[1]]);
+		    this.board[square[0]][square[1]] = 0;
+		}
+		if (square[2] == EN_PASSANT) {
+		    this.player.partner.spare.push(this.board[square[0]][square[1]-1]);
+		    this.board[square[0]][square[1]-1] = 0;
+		}
 		var oldColumn = this.column;
 		var oldRow = this.row;
 		this.column = square[0];
 		this.row = square[1];
+		this.board[square[0]][square[1]] = this.board[oldColumn][oldRow];
 		this.board[oldColumn][oldRow] = 0;
-		//capture, enp. unfinished!!
 	    }
 	}
     };
