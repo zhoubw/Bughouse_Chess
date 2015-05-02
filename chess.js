@@ -15,8 +15,13 @@ var CAPTURE = 1;
 var EN_PASSANT = 2;
 var JUMP = 3;
 
+var WHITE_A = 0;
+var BLACK_A = 1;
+var WHITE_B = 2;
+var BLACK_B = 3;
+
 //these boards are sideways; access is [column][row]
-var Board1 = [[0,0,0,0,0,0,0,0],
+var BoardA = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
@@ -25,7 +30,7 @@ var Board1 = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0]];
 
-var Board2 = [[0,0,0,0,0,0,0,0],
+var BoardB = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
@@ -35,12 +40,36 @@ var Board2 = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0]];
 
 /*=========== Constructors ============*/
-function Player (position) {
+function Player (color, position, opponent, partner) {
+    this.position = position;
+    this.opponent = opponent;
+    this.partner = partner;
+    this.color = color;
+    
     this.side = [];
+    this.time = 180.0;
+
+    this.setOpponent = function(o) {
+	this.opponent = o;
+    };
+    this.setPartner = function(p) {
+	this.partner = p;
+    }
 };
 
-function Piece (color, type, board, column, row) {
+//all the players
+white_A = new Player(WHITE, WHITE_A, -1, -1);
+black_A = new Player(BLACK, BLACK_A, white_A, -1);
+white_B = new Player(WHITE, WHITE_B, -1, white_A);
+black_B = new Player(BLACK, BLACK_B, white_B, black_A);
+white_A.setOpponent(black_A);
+white_A.setPartner(white_B);
+black_A.setPartner(black_B);
+white_B.setOpponent(black_B);
+
+function Piece (player, color, type, board, column, row) {
     //0-7, -1 if spare
+    this.player = player; //what player this piece belongs to
     this.type = type;
     this.column = -1; //temp
     this.row = -1; //temp
@@ -168,60 +197,60 @@ function Piece (color, type, board, column, row) {
 function Init() {
     // Fill the boards
 
-    //board 1
-    //board 1 white minor
-    Board1[0][0] = new Piece(WHITE,ROOK,1,0,0)
-    Board1[1][0] = new Piece(WHITE,KNIGHT,1,1,0);
-    Board1[2][0] = new Piece(WHITE,BISHOP,1,2,0);
-    Board1[3][0] = new Piece(WHITE,QUEEN,1,3,0);
-    Board1[4][0] = new Piece(WHITE,KING,1,4,0);
-    Board1[5][0] = new Piece(WHITE,BISHOP,1,5,0);
-    Board1[6][0] = new Piece(WHITE,KNIGHT,1,6,0);
-    Board1[7][0] = new Piece(WHITE,ROOK,1,7,0);
-    //board 1 white pawns
+    //board A
+    //board A white minor
+    BoardA[0][0] = new Piece(white_A,white_A.color,ROOK,1,0,0)
+    BoardA[1][0] = new Piece(white_A,white_A.color,KNIGHT,1,1,0);
+    BoardA[2][0] = new Piece(white_A,white_A.color,BISHOP,1,2,0);
+    BoardA[3][0] = new Piece(white_A,white_A.color,QUEEN,1,3,0);
+    BoardA[4][0] = new Piece(white_A,white_A.color,KING,1,4,0);
+    BoardA[5][0] = new Piece(white_A,white_A.color,BISHOP,1,5,0);
+    BoardA[6][0] = new Piece(white_A,white_A.color,KNIGHT,1,6,0);
+    BoardA[7][0] = new Piece(white_A,white_A.color,ROOK,1,7,0);
+    //board A white pawns
     for (var i=0;i<8;i++) {
-	Board1[i][1] = new Piece(WHITE,PAWN,1,i,1);
+	BoardA[i][1] = new Piece(white_A,white_A.color,PAWN,1,i,1);
     }
-    //board 1 black minor
-    Board1[0][7] = new Piece(BLACK,ROOK,1,0,7)
-    Board1[1][7] = new Piece(BLACK,KNIGHT,1,1,7);
-    Board1[2][7] = new Piece(BLACK,BISHOP,1,2,7);
-    Board1[3][7] = new Piece(BLACK,QUEEN,1,3,7);
-    Board1[4][7] = new Piece(BLACK,KING,1,4,7);
-    Board1[5][7] = new Piece(BLACK,BISHOP,1,5,7);
-    Board1[6][7] = new Piece(BLACK,KNIGHT,1,6,7);
-    Board1[7][7] = new Piece(BLACK,ROOK,1,7,7);
-    //board 1 black pawns
+    //board A black minor
+    BoardA[0][7] = new Piece(black_A,black_A.color,ROOK,1,0,7)
+    BoardA[1][7] = new Piece(black_A,black_A.color,KNIGHT,1,1,7);
+    BoardA[2][7] = new Piece(black_A,black_A.color,BISHOP,1,2,7);
+    BoardA[3][7] = new Piece(black_A,black_A.color,QUEEN,1,3,7);
+    BoardA[4][7] = new Piece(black_A,black_A.color,KING,1,4,7);
+    BoardA[5][7] = new Piece(black_A,black_A.color,BISHOP,1,5,7);
+    BoardA[6][7] = new Piece(black_A,black_A.color,KNIGHT,1,6,7);
+    BoardA[7][7] = new Piece(black_A,black_A.color,ROOK,1,7,7);
+    //board A black pawns	      
     for (var i=0;i<8;i++) {
-	Board1[i][6] = new Piece(BLACK,PAWN,1,i,6);
+	BoardA[i][6] = new Piece(black_A,black_A.color,PAWN,1,i,6);
     }
 
-    //board 2
-    //board 2 white minor
-    Board2[0][0] = new Piece(WHITE,ROOK,2,0,0)
-    Board2[1][0] = new Piece(WHITE,KNIGHT,2,1,0);
-    Board2[2][0] = new Piece(WHITE,BISHOP,2,2,0);
-    Board2[3][0] = new Piece(WHITE,QUEEN,2,3,0);
-    Board2[4][0] = new Piece(WHITE,KING,2,4,0);
-    Board2[5][0] = new Piece(WHITE,BISHOP,2,5,0);
-    Board2[6][0] = new Piece(WHITE,KNIGHT,2,6,0);
-    Board2[7][0] = new Piece(WHITE,ROOK,2,7,0);
-    //board 2 white pawns
+    //board B
+    //board B white minor
+    BoardB[0][0] = new Piece(white_B,white_B.color,ROOK,2,0,0)
+    BoardB[1][0] = new Piece(white_B,white_B.color,KNIGHT,2,1,0);
+    BoardB[2][0] = new Piece(white_B,white_B.color,BISHOP,2,2,0);
+    BoardB[3][0] = new Piece(white_B,white_B.color,QUEEN,2,3,0);
+    BoardB[4][0] = new Piece(white_B,white_B.color,KING,2,4,0);
+    BoardB[5][0] = new Piece(white_B,white_B.color,BISHOP,2,5,0);
+    BoardB[6][0] = new Piece(white_B,white_B.color,KNIGHT,2,6,0);
+    BoardB[7][0] = new Piece(white_B,white_B.color,ROOK,2,7,0);
+    //board B white pawns
     for (var i=0;i<8;i++) {
-	Board2[i][1] = new Piece(WHITE,PAWN,2,i,1);
+	BoardB[i][1] = new Piece(white_B,white_B.color,PAWN,2,i,1);
     }
-    //board 2 black minor
-    Board2[0][7] = new Piece(BLACK,ROOK,2,0,7)
-    Board2[1][7] = new Piece(BLACK,KNIGHT,2,1,7);
-    Board2[2][7] = new Piece(BLACK,BISHOP,2,2,7);
-    Board2[3][7] = new Piece(BLACK,QUEEN,2,3,7);
-    Board2[4][7] = new Piece(BLACK,KING,2,4,7);
-    Board2[5][7] = new Piece(BLACK,BISHOP,2,5,7);
-    Board2[6][7] = new Piece(BLACK,KNIGHT,2,6,7);
-    Board2[7][7] = new Piece(BLACK,ROOK,2,7,7);
-    //board 1 black pawns
+    //board B black minor
+    BoardB[0][7] = new Piece(black_B,black_B.color,ROOK,2,0,7)
+    BoardB[1][7] = new Piece(black_B,black_B.color,KNIGHT,2,1,7);
+    BoardB[2][7] = new Piece(black_B,black_B.color,BISHOP,2,2,7);
+    BoardB[3][7] = new Piece(black_B,black_B.color,QUEEN,2,3,7);
+    BoardB[4][7] = new Piece(black_B,black_B.color,KING,2,4,7);
+    BoardB[5][7] = new Piece(black_B,black_B.color,BISHOP,2,5,7);
+    BoardB[6][7] = new Piece(black_B,black_B.color,KNIGHT,2,6,7);
+    BoardB[7][7] = new Piece(black_B,black_B.color,ROOK,2,7,7);
+    //board B black pawns
     for (var i=0;i<8;i++) {
-	Board2[i][6] = new Piece(BLACK,PAWN,2,i,6);
+	BoardB[i][6] = new Piece(black_B,black_B.color,PAWN,2,i,6);
     }
 
 
