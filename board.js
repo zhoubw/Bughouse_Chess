@@ -206,29 +206,57 @@ var resetSquare = function(coord){
     }
 }    
 
-var addPiece = function(coord,piece){
-    console.log(piece);
+var addPiece = function(piece){
+    //console.log(piece);
+    var coord = '00';
+    var c = 'w';
+    if (piece.board == 1){
+	coord = xplace[piece.column].toLowerCase() + yplace[7-piece.row];
+    }else{
+	coord = xplace[piece.column] + yplace[7-piece.row];
+    }
     var arr = getCoords(coord);
     if (arr[2]==1){
 	base_image = new Image();
-	base_image.src = 'chesspieces/alpha/wP.png';
+	if (piece.color==false){
+	    c='b';
+	}
+	base_image.src = 'chesspieces/alpha/'+c+piece.type+'.png';
+	console.log(base_image.src);
 	base_image.onload = function(){
 	    ctx1.drawImage(base_image, arr[0], arr[1], 48, 48);
 	}
     }else{
 	base_image = new Image();
-	base_image.src = 'chesspieces/alpha/wP.png';
+	if (piece.color==false){
+	    c='b';
+	}
+	base_image.src = 'chesspieces/alpha/'+c+piece.type+'.png';
 	base_image.onload = function(){
 	    ctx2.drawImage(base_image, arr[0], arr[1], 48, 48);
 	}
     }
 }
 
-var loadPieces = function(board,context){
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
+var loadPieces = function(){
     for (var i =0;i<8;i++){
 	for (var j=0;j<8;j++){
 	    //need to wait until the format for the board storage is finished
-	    j=j;
+	    if(BoardA[i][j] != 0){
+		addPiece(BoardA[i][j]);
+		sleep(10);
+		addPiece(BoardB[i][j]);
+		sleep(10);
+	    }
 	}
     }
 }
@@ -266,10 +294,10 @@ $('#board1').on('click', function(e){
     //oldx[0] = x;
     //oldy[0] = y;
     $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
-    if (oldSquare != '00'){
-	addPiece(xplace[x/50].toLowerCase() + yplace[y/50],'PAWN');
-	resetSquare(oldSquare);
-    }
+    //if (oldSquare != '00'){
+	//addPiece(xplace[x/50].toLowerCase() + yplace[y/50],'PAWN');
+	//resetSquare(oldSquare);
+    //}
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
     console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
 });
@@ -305,3 +333,4 @@ $('#board2').on('click', function(e){
     console.log(xplace[7-(x/50)]+yplace[7-(y/50)]);
 });
 console.log('done');
+console.log('var a = new Piece(white_A,white_A.color,Piece name,board[1 or 2], column[0 to 7], row[0 to 7])');
