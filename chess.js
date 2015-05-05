@@ -1,11 +1,11 @@
 console.log("test mode");
 
-var PAWN = 'p';
-var KING = 'k';
-var QUEEN = 'q';
-var ROOK = 'r';
-var BISHOP = 'b';
-var KNIGHT = 'n';
+var PAWN = 'P';
+var KING = 'K';
+var QUEEN = 'Q';
+var ROOK = 'R';
+var BISHOP = 'B';
+var KNIGHT = 'N';
 
 var WHITE = true;
 var BLACK = false;
@@ -62,6 +62,7 @@ white_A = new Player(WHITE, WHITE_A, -1, -1);
 black_A = new Player(BLACK, BLACK_A, white_A, -1);
 white_B = new Player(WHITE, WHITE_B, -1, white_A);
 black_B = new Player(BLACK, BLACK_B, white_B, black_A);
+
 white_A.setOpponent(black_A);
 white_A.setPartner(white_B);
 black_A.setPartner(black_B);
@@ -71,9 +72,9 @@ function Piece (player, color, type, board, column, row) {
     //0-7, -1 if spare
     this.player = player; //what player this piece belongs to
     this.type = type;
-    this.column = -1; //temp
-    this.row = -1; //temp
-    this.board = 1; //1 or 2, temp 1
+    this.column = column; //temp
+    this.row = row; //temp
+    this.board = board; //1 or 2, temp 1
     this.availableMoves = []; //all the moves loaded at the start of turn
     this.color = color; //true or false, true is white
     
@@ -101,12 +102,15 @@ function Piece (player, color, type, board, column, row) {
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
-		//capture, enp. unfinished!!
 		if (square[2] == CAPTURE) {
+		    this.board[square[0]][square[1]].column = -1;
+		    this.board[square[0]][square[1]].row = -1;
 		    this.player.partner.spare.push(this.board[square[0]][square[1]]);
 		    this.board[square[0]][square[1]] = 0;
 		}
 		if (square[2] == EN_PASSANT) {
+		    this.board[square[0]][square[1]-1].column = -1;
+		    this.board[square[0]][square[1]-1].row = -1;
 		    this.player.partner.spare.push(this.board[square[0]][square[1]-1]);
 		    this.board[square[0]][square[1]-1] = 0;
 		}
@@ -116,6 +120,9 @@ function Piece (player, color, type, board, column, row) {
 		this.row = square[1];
 		this.board[square[0]][square[1]] = this.board[oldColumn][oldRow];
 		this.board[oldColumn][oldRow] = 0;
+		if (square[2] == JUMP) {
+		    this.jumped = true;
+		}
 	    }
 	}
     };
@@ -175,7 +182,7 @@ function Piece (player, color, type, board, column, row) {
 		}
 	    }
 
-	    this.moved += 1;
+	    this.moved += 1; //maybe relocate this somewhere
 	};
 	break;
     case KING:
