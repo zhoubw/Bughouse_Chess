@@ -126,6 +126,25 @@ function Piece (player, color, type, board, column, row) {
 	    }
 	}
     };
+
+    //used in getMoves, search in one direction
+    this.extend = function(c, r, cInc, rInc) {	
+	if (squareExists(c, r)) {
+	    if (isSquareEmpty(this.board, c, r)) {
+		this.availableMoves.push([c, r, MOVE]);
+		return this.extend(c+cInc, r+rInc, cInc, rInc);
+	    }
+	    else {
+		var target = getPiece(this.board, c, r);
+		if (target.color != this.color) {
+		    this.availableMoves.push([c, r, CAPTURE]);
+		    return 1;
+		}			
+	    }
+	}
+	return 0;
+    };
+    
     switch(type) {
     case PAWN:
 	this.moved = 0; //first move
@@ -186,14 +205,39 @@ function Piece (player, color, type, board, column, row) {
 	};
 	break;
     case KING:
+	this.getMoves = function() {
+	    
+	};
 	break;
     case QUEEN:
+	this.getMoves = function() {
+	    this.availableMoves.length = 0; //clear array of moves
+	    
+	    this.extend(this.column+1,this.row,1,0); //E
+	    this.extend(this.column+1,this.row-1,1,-1); //SE
+	    this.extend(this.column,this.row-1,0,-1); //S
+	    this.extend(this.column-1,this.row-1,-1,-1); //SW
+	    this.extend(this.column-1,this.row,-1,0); //W
+	    this.extend(this.column-1,this.row+1,-1,+1); //NW
+	    this.extend(this.column,this.row+1,0,1); //N
+	    this.extend(this.column+1,this.row+1,1,1); //NE
+	    
+	};
 	break;
     case ROOK:
+	this.getMoves = function() {
+	    
+	};
 	break;
     case BISHOP:
+	this.getMoves = function() {
+	    
+	};
 	break;
     case KNIGHT:
+	this.getMoves = function() {
+	    
+	};
 	break;
     default:
 	break;
@@ -273,6 +317,13 @@ function Init() {
 };
 
 /*============ Board Interaction ==============*/
+
+function squareExists(column, row) {
+    if (column < 0 || column > 7 || row < 0 || row > 7) {
+	return false;
+    }
+    return true;
+}
 
 function isSquareEmpty(board, column, row) {
     if (column < 0 || column > 7 || row < 0 || row > 7) {
