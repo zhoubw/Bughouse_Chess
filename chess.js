@@ -226,17 +226,54 @@ function Piece (player, color, type, board, column, row) {
 	break;
     case ROOK:
 	this.getMoves = function() {
+	    this.availableMoves.length = 0; //clear array of moves
+	    
+	    this.extend(this.column+1,this.row,1,0); //E
+	    this.extend(this.column,this.row-1,0,-1); //S
+	    this.extend(this.column-1,this.row,-1,0); //W
+	    this.extend(this.column,this.row+1,0,1); //N
 	    
 	};
 	break;
     case BISHOP:
 	this.getMoves = function() {
+	    this.availableMoves.length = 0; //clear array of moves
 	    
+	    this.extend(this.column+1,this.row-1,1,-1); //SE
+	    this.extend(this.column-1,this.row-1,-1,-1); //SW
+	    this.extend(this.column-1,this.row+1,-1,+1); //NW
+	    this.extend(this.column+1,this.row+1,1,1); //NE
+
 	};
 	break;
     case KNIGHT:
+	this.checkKnightSquare = function(c,r) {
+	    if (squareExists(c,r)) {
+		if (isSquareEmpty(this.board, c, r)) {
+		    this.availableMoves.push([c,r,MOVE]);
+		    return 1;
+		}
+		else {
+		    var target = getPiece(this.board, c, r);
+		    if (target.color != this.color) {
+			this.availableMoves.push([c, r, CAPTURE]);
+			return 1;
+		    }
+		}
+	    }
+	    return 0;
+	};
 	this.getMoves = function() {
-	    
+	    this.availableMove.length = 0; //clear array of moves
+
+	    this.checkKnightSquare(this.column+1,this.row+2);
+	    this.checkKnightSquare(this.column+2,this.row+1);
+	    this.checkKnightSquare(this.column+1,this.row-2);
+	    this.checkKnightSquare(this.column+2,this.row-1);
+	    this.checkKnightSquare(this.column-1,this.row+2);
+	    this.checkKnightSquare(this.column-2,this.row+1);
+	    this.checkKnightSquare(this.column-1,this.row-2);
+	    this.checkKnightSquare(this.column-2,this.row-1);
 	};
 	break;
     default:
@@ -330,14 +367,14 @@ function isSquareEmpty(board, column, row) {
 	return false; //square doesn't exist
     }
     if (board == 1) {
-	return Board1[column][row] == 0;
+	return BoardA[column][row] == 0;
     }
-    return Board2[column][row] == 0;
+    return BoardB[column][row] == 0;
 }
 
 function getPiece(board, column, row) {
     if (board == 1) {
-	return Board1[column][row];
+	return BoardA[column][row];
     }
-    return Board2[column][row];
+    return BoardB[column][row];
 }
