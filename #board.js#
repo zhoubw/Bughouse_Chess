@@ -2,38 +2,9 @@ var oldx = [0,0];
 var oldy = [0,0];
 var xplace = ['A','B','C','D','E','F','G','H'];
 var yplace = ['8','7','6','5','4','3','2','1'];
-var board1 = $('#board1')[0];
-var board2 = $('#board2')[0];
 var ctx1 = $('#board1')[0].getContext("2d");
 var ctx2 = $('#board2')[0].getContext("2d");
 var oldSquare = '00'
-var wp = new Image(48,48);
-wp.src = "chesspieces/alpha/wP.png"
-var wn = new Image(48,48);
-wn.src = "chesspieces/alpha/wN.png"
-var wr = new Image(48,48);
-wr.src = "chesspieces/alpha/wR.png"
-var wb = new Image(48,48);
-wb.src = "chesspieces/alpha/wB.png"
-var wq = new Image(48,48);
-wq.src = "chesspieces/alpha/wQ.png"
-var wk = new Image(48,48);
-wk.src = "chesspieces/alpha/wK.png"
-
-var bp = new Image(48,48);
-bp.src = "chesspieces/alpha/bP.png"
-var bn = new Image(48,48);
-bn.src = "chesspieces/alpha/bN.png"
-var br = new Image(48,48);
-br.src = "chesspieces/alpha/bR.png"
-var bb = new Image(48,48);
-bb.src = "chesspieces/alpha/bB.png"
-var bq = new Image(48,48);
-bq.src = "chesspieces/alpha/bQ.png"
-var bk = new Image(48,48);
-bk.src = "chesspieces/alpha/bK.png"
-
-
 
 var makeLines = function(ctx){
     for (var i=0;i<=400;i+=50){
@@ -61,8 +32,8 @@ var makeSquares = function(ctx){
     }
 };
 
-
-var clicker = function(e,ctx,d){
+/*
+var clicker = function(e,ctx){
     if (oldx%100==50){
         if (oldy%100==0){
             ctx.fillStyle = "#0101FF";
@@ -80,15 +51,15 @@ var clicker = function(e,ctx,d){
             ctx.fillRect(oldx+1,oldy+1,48,48);
         }
     }
-    var x = d['x'] - (d['x']%50);
-    var y = d['y'] - (d['y']%50);
+    var x = e.pageX - (e.pageX%50);
+    var y = e.pageY - (e.pageY%50);
     ctx.fillStyle = "#00FF00";
     ctx.fillRect(x+1,y+1,48,48);
     oldx = x;
     oldy = y;
     console.log(xplace[x/50]+yplace[y/50]);
 }
-
+*/
 
 var getCoords = function(coord){ //returns array of [xcoor,ycoor,board#]
     var lett = coord.substr(0,1);
@@ -235,6 +206,37 @@ var resetSquare = function(coord){
     }
 }    
 
+var addPiece = function(piece){
+    //console.log(piece);
+    var coord = '00';
+    var c = 'w';
+    if (piece.board == 1){
+	coord = xplace[piece.column].toLowerCase() + yplace[7-piece.row];
+    }else{
+	coord = xplace[piece.column] + yplace[7-piece.row];
+    }
+    var arr = getCoords(coord);
+    if (arr[2]==1){
+	base_image = new Image();
+	if (piece.color==false){
+	    c='b';
+	}
+	base_image.src = 'chesspieces/alpha/'+c+piece.type+'.png';
+	console.log(base_image.src);
+	base_image.onload = function(){
+	    ctx1.drawImage(base_image, arr[0], arr[1], 48, 48);
+	}
+    }else{
+	base_image = new Image();
+	if (piece.color==false){
+	    c='b';
+	}
+	base_image.src = 'chesspieces/alpha/'+c+piece.type+'.png';
+	base_image.onload = function(){
+	    ctx2.drawImage(base_image, arr[0], arr[1], 48, 48);
+	}
+    }
+}
 
 function sleep(milliseconds) {
   var start = new Date().getTime();
@@ -245,53 +247,18 @@ function sleep(milliseconds) {
   }
 }
 
-var addPiece = function(piece,x,y){
-    ctx = ctx1;
-    if (piece.board == 2){
-	ctx = ctx2;
-    }
-    switch (piece.type){
-    case PAWN:
-	if (piece.color){
-	    ctx.drawImage(wp,x,y,48,48);
-	}else{
-	    ctx.drawImage(bp,x,y,48,48);
-	}
-	break;
-    case ROOK:
-	if (piece.color){
-	    ctx.drawImage(wr,x,y,48,48);
-	}else{
-	    ctx.drawIamge(br,x,y,48,48);
-	}
-	break;
-    }
-    
-}
-
 var loadPieces = function(){
-    for (var i = 0;i<8;i++){
+    for (var i =0;i<8;i++){
 	for (var j=0;j<8;j++){
-	    if (BoardA[i][j] != 0){
-		addPiece(BoardA[i][j],i*50+1,400-(j+50+1));
-		addPiece(BoardB[i][j],400-(i*50+1),j+50+1);
+	    //need to wait until the format for the board storage is finished
+	    if(BoardA[i][j] != 0){
+		addPiece(BoardA[i][j]);
+		sleep(10);
+		addPiece(BoardB[i][j]);
+		sleep(10);
 	    }
 	}
     }
-}
-	    
-var loadPiecesR = function(i, j){
-    if(BoardA[i][j] != 0){
-	addPiece(BoardA[i][j]);
-	addPiece(BoardB[i][j]);
-    }
-    if (i==8){
-	return;
-    }
-    if (j==8){
-	loadPiecesR(i+1,0);
-    }
-    loadPiecesR(i,j+1);
 }
 
 
@@ -300,9 +267,8 @@ makeLines(ctx2);
 makeSquares(ctx1);
 makeSquares(ctx2);
 
-
-function click1(e,d){
-    
+$('#board1').on('click', function(e){
+    /*
     if (oldx[0]%100==50){
         if (oldy[0]%100==0){
             ctx1.fillStyle = "#FF9999";
@@ -320,9 +286,9 @@ function click1(e,d){
             ctx1.fillRect(oldx+1,oldy+1,48,48);
         }
     }
-       //for resetting square color
-    var x = d['x'] - (d['x']%50);
-    var y = d['y'] - (d['y']%50);
+    */ //for resetting square color
+    var x = e.pageX - (e.pageX%50);
+    var y = e.pageY - (e.pageY%50);
     ctx1.fillStyle = "#00FF00";
     hSquare(xplace[x/50].toLowerCase() + yplace[y/50]);
     //oldx[0] = x;
@@ -334,12 +300,10 @@ function click1(e,d){
     //}
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
     console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
-};
+});
 
-
-
-function click2(e,d){
-    
+$('#board2').on('click', function(e){
+    /*
     if (oldx[1]%100==50){
         if (oldy[1]%100==50){
             ctx2.fillStyle = "#FF9999";
@@ -357,9 +321,9 @@ function click2(e,d){
             ctx2.fillRect(oldx+1,oldy+1,48,48);
         }
     }
-     //for resetting square color
-    var x = d['x'] - (d['x']%50);
-    var y = d['y'] - (d['y']%50);
+    */ //for resetting square color
+    var x = e.pageX - (e.pageX%50)-400;
+    var y = e.pageY - (e.pageY%50);
     ctx2.fillStyle = "#00FF00";
     hSquare(xplace[7-(x/50)] + yplace[7-(y/50)]);
     //oldx[1] = x;
@@ -367,29 +331,12 @@ function click2(e,d){
     $('#place').html(oldSquare + " - " + xplace[7-(x/50)] + yplace[7-(y/50)]);
     oldSquare = xplace[7-(x/50)] + yplace[7-(y/50)];
     console.log(xplace[7-(x/50)]+yplace[7-(y/50)]);
-};
-
+});
 console.log('done');
 console.log('var a = new Piece(white_A,white_A.color,Piece name,board[1 or 2], column[0 to 7], row[0 to 7])');
 
-
-function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-        x: evt.clientX - rect.left,
-        y: evt.clientY - rect.top
-    };
+function cnvs_getCoordinates(e){
+    x=e.clientX;
+    y=e.clientY;
+    document.getElementById("xycoordinates").innerHTML="Coordinates: (" + x + "," + y + ")";
 }
-
-
-board1.addEventListener('mousedown', function(evt){
-    var mousePos = getMousePos(board1,evt);
-    click1(evt,mousePos);
-    console.log(mousePos);
-}, false);
-
-board2.addEventListener('mousedown', function(evt){
-    var mousePos = getMousePos(board2,evt);
-    click2(evt,mousePos);
-    console.log(mousePos);
-}, false);
