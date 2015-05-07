@@ -5,6 +5,33 @@ var yplace = ['8','7','6','5','4','3','2','1'];
 var ctx1 = $('#board1')[0].getContext("2d");
 var ctx2 = $('#board2')[0].getContext("2d");
 var oldSquare = '00'
+var wp = new Image(48,48);
+wp.src = "chesspieces/alpha/wP.png"
+var wn = new Image(48,48);
+wn.src = "chesspieces/alpha/wN.png"
+var wr = new Image(48,48);
+wr.src = "chesspieces/alpha/wR.png"
+var wb = new Image(48,48);
+wb.src = "chesspieces/alpha/wB.png"
+var wq = new Image(48,48);
+wq.src = "chesspieces/alpha/wQ.png"
+var wk = new Image(48,48);
+wk.src = "chesspieces/alpha/wK.png"
+
+var bp = new Image(48,48);
+bp.src = "chesspieces/alpha/bP.png"
+var bn = new Image(48,48);
+bn.src = "chesspieces/alpha/bN.png"
+var br = new Image(48,48);
+br.src = "chesspieces/alpha/bR.png"
+var bb = new Image(48,48);
+bb.src = "chesspieces/alpha/bB.png"
+var bq = new Image(48,48);
+bq.src = "chesspieces/alpha/bQ.png"
+var bk = new Image(48,48);
+bk.src = "chesspieces/alpha/bK.png"
+
+
 
 var makeLines = function(ctx){
     for (var i=0;i<=400;i+=50){
@@ -206,37 +233,6 @@ var resetSquare = function(coord){
     }
 }    
 
-var addPiece = function(piece){
-    //console.log(piece);
-    var coord = '00';
-    var c = 'w';
-    if (piece.board == 1){
-	coord = xplace[piece.column].toLowerCase() + yplace[7-piece.row];
-    }else{
-	coord = xplace[piece.column] + yplace[7-piece.row];
-    }
-    var arr = getCoords(coord);
-    if (arr[2]==1){
-	base_image = new Image();
-	if (piece.color==false){
-	    c='b';
-	}
-	base_image.src = 'chesspieces/alpha/'+c+piece.type+'.png';
-	console.log(base_image.src);
-	base_image.onload = function(){
-	    ctx1.drawImage(base_image, arr[0], arr[1], 48, 48);
-	}
-    }else{
-	base_image = new Image();
-	if (piece.color==false){
-	    c='b';
-	}
-	base_image.src = 'chesspieces/alpha/'+c+piece.type+'.png';
-	base_image.onload = function(){
-	    ctx2.drawImage(base_image, arr[0], arr[1], 48, 48);
-	}
-    }
-}
 
 function sleep(milliseconds) {
   var start = new Date().getTime();
@@ -247,18 +243,53 @@ function sleep(milliseconds) {
   }
 }
 
+var addPiece = function(piece,x,y){
+    ctx = ctx1;
+    if (piece.board == 2){
+	ctx = ctx2;
+    }
+    switch (piece.type){
+    case PAWN:
+	if (piece.color){
+	    ctx.drawImage(wp,x,y,48,48);
+	}else{
+	    ctx.drawImage(bp,x,y,48,48);
+	}
+	break;
+    case ROOK:
+	if (piece.color){
+	    ctx.drawImage(wr,x,y,48,48);
+	}else{
+	    ctx.drawIamge(br,x,y,48,48);
+	}
+	break;
+    }
+    
+}
+
 var loadPieces = function(){
-    for (var i =0;i<8;i++){
+    for (var i = 0;i<8;i++){
 	for (var j=0;j<8;j++){
-	    //need to wait until the format for the board storage is finished
-	    if(BoardA[i][j] != 0){
-		addPiece(BoardA[i][j]);
-		sleep(10);
-		addPiece(BoardB[i][j]);
-		sleep(10);
+	    if (BoardA[i][j] != 0){
+		addPiece(BoardA[i][j],i*50+1,400-(j+50+1));
+		addPiece(BoardB[i][j],400-(i*50+1),j+50+1);
 	    }
 	}
     }
+}
+	    
+var loadPiecesR = function(i, j){
+    if(BoardA[i][j] != 0){
+	addPiece(BoardA[i][j]);
+	addPiece(BoardB[i][j]);
+    }
+    if (i==8){
+	return;
+    }
+    if (j==8){
+	loadPiecesR(i+1,0);
+    }
+    loadPiecesR(i,j+1);
 }
 
 
