@@ -205,7 +205,51 @@ function Piece (player, color, type, board, column, row) {
 	};
 	break;
     case KING:
+	//actually identical to checkKnightSquare
+	this.checkKingSquare = function(c,r) {
+	    if (squareExists(c,r)) {
+		if (isSquareEmpty(this.board, c, r)) {
+		    this.availableMoves.push([c,r,MOVE]);
+		    return 1;
+		}
+		else {
+		    var target = getPiece(this.board, c, r);
+		    if (target.color != this.color) {
+			this.availableMoves.push([c, r, CAPTURE]);
+			return 1;
+		    }
+		}
+	    }
+	    return 0;
+	};
+	//checks if a square is attacked.
+	//the slow but safe way to do it:
+	// - check ALL the pieces on this board
+	// - if they have a move to that square, it's not safe
+	this.checkSafeSquare = function() {
+	    
+	};
+	//performs checkSafeSquare() on the king's square
+	//because the king can be hung in this game, inCheck() will not eliminate unsafe moves
+	this.inCheck = function() {
+	    
+	};
+	//if the king is in check and all squares around him are unsafe/occupied AND the enemy king is not in check,
+	//checkmate = true
+	this.checkmate = function() {
+	    
+	};
 	this.getMoves = function() {
+	    this.availableMoves.length = 0; //clear array of moves
+
+	    checkKingSquare(this.column, this.row+1);
+	    checkKingSquare(this.column+1, this.row+1);
+	    checkKingSquare(this.column+1, this.row);
+	    checkKingSquare(this.column+1, this.row-1);
+	    checkKingSquare(this.column, this.row-1);
+	    checkKingSquare(this.column-1, this.row-1);
+	    checkKingSquare(this.column-1, this.row);
+	    checkKingSquare(this.column-1, this.row+1);
 	    
 	};
 	break;
