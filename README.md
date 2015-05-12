@@ -15,6 +15,7 @@
   - [ ] Setup
   - [ ] Working 2v2 site
   - [ ] Multiple rooms
+
 ## Description
 * Bughouse chess is a chess variation that involves four players in teams of two and two boards.
 * The game ends in a "one for all" fashion, as one player loses for the team.
