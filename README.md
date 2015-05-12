@@ -8,6 +8,7 @@
   - [x] Board init
   - [x] Piece and board interaction
   - [ ] King, check, and endgame
+  - [ ] Dropping pieces
 - [ ] Set up node.js server
 - [x] Chessboard - 75%
   - [x] Board
