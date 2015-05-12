@@ -6,32 +6,33 @@ var board1 = $('#board1')[0];
 var board2 = $('#board2')[0];
 var ctx1 = $('#board1')[0].getContext("2d");
 var ctx2 = $('#board2')[0].getContext("2d");
-var oldSquare = '00'
+var oldSquare = '00';
+var loaded = [false,false,false,false,false,false,false,false,false,false,false,false];
 var wp = new Image(48,48);
-wp.src = "chesspieces/alpha/wP.png"
+wp.src = "chesspieces/alpha/wP.png";
 var wn = new Image(48,48);
-wn.src = "chesspieces/alpha/wN.png"
+wn.src = "chesspieces/alpha/wN.png";
 var wr = new Image(48,48);
-wr.src = "chesspieces/alpha/wR.png"
+wr.src = "chesspieces/alpha/wR.png";
 var wb = new Image(48,48);
-wb.src = "chesspieces/alpha/wB.png"
+wb.src = "chesspieces/alpha/wB.png";
 var wq = new Image(48,48);
-wq.src = "chesspieces/alpha/wQ.png"
+wq.src = "chesspieces/alpha/wQ.png";
 var wk = new Image(48,48);
-wk.src = "chesspieces/alpha/wK.png"
+wk.src = "chesspieces/alpha/wK.png";
 
 var bp = new Image(48,48);
-bp.src = "chesspieces/alpha/bP.png"
+bp.src = "chesspieces/alpha/bP.png";
 var bn = new Image(48,48);
-bn.src = "chesspieces/alpha/bN.png"
+bn.src = "chesspieces/alpha/bN.png";
 var br = new Image(48,48);
-br.src = "chesspieces/alpha/bR.png"
+br.src = "chesspieces/alpha/bR.png";
 var bb = new Image(48,48);
-bb.src = "chesspieces/alpha/bB.png"
+bb.src = "chesspieces/alpha/bB.png";
 var bq = new Image(48,48);
-bq.src = "chesspieces/alpha/bQ.png"
+bq.src = "chesspieces/alpha/bQ.png";
 var bk = new Image(48,48);
-bk.src = "chesspieces/alpha/bK.png"
+bk.src = "chesspieces/alpha/bK.png";
 
 
 
@@ -265,11 +266,12 @@ var addPiece = function(piece,x,y){
 	    ctx.drawIamge(br,x,y,48,48);
 	}
 	break;
-    }
-    
+    }    
 }
 
 var loadPieces = function(){
+    console.log('start');
+    /*
     for (var i = 0;i<8;i++){
 	for (var j=0;j<8;j++){
 	    if (BoardA[i][j] != 0){
@@ -278,9 +280,54 @@ var loadPieces = function(){
 	    }
 	}
     }
+    */
+    ctx1.drawImage(wr,1,351,48,48);
+    ctx2.drawImage(wr,351,1,48,48);
+    ctx1.drawImage(wr,351,351,48,48);
+    ctx2.drawImage(wr,1,1,48,48);
+    ctx1.drawImage(br,1,1,48,48);
+    ctx2.drawImage(br,1,351,48,48);
+    ctx1.drawImage(br,351,1,48,48);
+    ctx2.drawImage(br,351,351,48,48);
+    
+    ctx1.drawImage(wn,51,351,48,48);
+    ctx2.drawImage(wn,301,1,48,48);
+    ctx1.drawImage(wn,301,351,48,48);
+    ctx2.drawImage(wn,51,1,48,48);
+    ctx1.drawImage(bn,51,1,48,48);
+    ctx2.drawImage(bn,301,351,48,48);
+    ctx1.drawImage(bn,301,1,48,48);
+    ctx2.drawImage(bn,51,351,48,48);
+    
+    ctx1.drawImage(wb,101,351,48,48);
+    ctx2.drawImage(wb,251,1,48,48);
+    ctx1.drawImage(wb,251,351,48,48);
+    ctx2.drawImage(wb,101,1,48,48);
+    ctx1.drawImage(bb,101,1,48,48);
+    ctx2.drawImage(bb,251,351,48,48);
+    ctx1.drawImage(bb,251,1,48,48);
+    ctx2.drawImage(bb,101,351,48,48);
+
+    ctx1.drawImage(wk,151,351,48,48);
+    ctx2.drawImage(wk,201,1,48,48);
+    ctx1.drawImage(wq,201,351,48,48);
+    ctx2.drawImage(wq,151,1,48,48);
+    ctx2.drawImage(bk,151,351,48,48);
+    ctx1.drawImage(bk,201,1,48,48);
+    ctx2.drawImage(bq,201,351,48,48);
+    ctx1.drawImage(bq,151,1,48,48);
+
+    for (var a = 0;a<8;a++){
+	ctx1.drawImage(wp,(a*50)+1,301,48,48);
+	ctx1.drawImage(bp,(a*50)+1,51,48,48);
+	ctx2.drawImage(bp,(a*50)+1,301,48,48);
+	ctx2.drawImage(wp,(a*50)+1,51,48,48);
+    }
+    console.log('end');
 }
 	    
 var loadPiecesR = function(i, j){
+    
     if(BoardA[i][j] != 0){
 	addPiece(BoardA[i][j]);
 	addPiece(BoardB[i][j]);
@@ -299,6 +346,32 @@ makeLines(ctx1);
 makeLines(ctx2);
 makeSquares(ctx1);
 makeSquares(ctx2);
+
+Init()
+loadPieces();
+
+
+
+
+var hMoves = function(piece){
+    piece.getMoves();
+    for (var i = 0;i<piece.availableMoves.length;i++){
+	hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function click1(e,d){
@@ -324,7 +397,6 @@ function click1(e,d){
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
     ctx1.fillStyle = "#00FF00";
-    hSquare(xplace[x/50].toLowerCase() + yplace[y/50]);
     //oldx[0] = x;
     //oldy[0] = y;
     $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
@@ -361,7 +433,6 @@ function click2(e,d){
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
     ctx2.fillStyle = "#00FF00";
-    hSquare(xplace[7-(x/50)] + yplace[7-(y/50)]);
     //oldx[1] = x;
     //oldy[1] = y;
     $('#place').html(oldSquare + " - " + xplace[7-(x/50)] + yplace[7-(y/50)]);
@@ -386,6 +457,7 @@ board1.addEventListener('mousedown', function(evt){
     var mousePos = getMousePos(board1,evt);
     click1(evt,mousePos);
     console.log(mousePos);
+    
 }, false);
 
 board2.addEventListener('mousedown', function(evt){
