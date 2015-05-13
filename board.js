@@ -347,7 +347,7 @@ makeLines(ctx2);
 makeSquares(ctx1);
 makeSquares(ctx2);
 
-Init()
+Init();
 loadPieces();
 
 
@@ -396,7 +396,9 @@ function click1(e,d){
        //for resetting square color
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
+    ctx1.globalAlpha=0.2;
     ctx1.fillStyle = "#00FF00";
+    ctx1.fillRect(x+1,y+1,48,48);
     //oldx[0] = x;
     //oldy[0] = y;
     $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
