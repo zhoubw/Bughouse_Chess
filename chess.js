@@ -45,6 +45,7 @@ function Player (color, position, opponent, partner) {
     this.opponent = opponent;
     this.partner = partner;
     this.color = color;
+    this.king = -1;
     
     this.spare = [];
     this.time = 180.0;
@@ -144,9 +145,51 @@ function Piece (player, color, type, board, column, row) {
 	}
 	return 0;
     };
+
+    
+    this.pinned = function() {
+	//check each square around the king
+	//diagonals: check if Bishop/Queen, pinned piece and king are concurrent
+	//files/columns: check if Rook/Queen, pinned piece and king are concurrent
+	//use the slope between king and pinned piece to decide which way to recurse
+	var y_div = this.row - this.player.king.row;
+	var x_div = this.column - this.player.king.column;
+	if (y_div > 1 || x_div > 1) {
+	    return false; //this piece cannot be pinned; only pieces on N/E/S/W can be pinned
+	}
+	
+	var search_x = this.column + x_div;
+	var search_y = this.row + y_div;
+	while (squareExists(search_x, search_y)) {
+	    if (isSquareEmpty(this.board,search_x,search_y)) {
+		search_x = search_x + x_div;
+		search_y = search_y + y_div;
+	    }
+	    else {
+		break;
+	    }
+	}
+
+	//search for bishop or queen, concurrent on diagonal
+	if (x_div == y_div) {
+	    var p = getPiece(this.board,search_x,search_y).type;
+	    if (p == BISHOP || p == QUEEN) {
+		return true;
+	    }
+	}
+	//search for rook or queen, concurrent on file
+	else {
+	    var p = getPiece(this.board,search_x,search_y).type;
+	    if (p == ROOK || p == QUEEN) {
+		return true;
+	    }
+	}
+	return false;
+    };
     
     switch(type) {
     case PAWN:
+	//PROMOTION NOT FINISHED!!
 	this.moved = 0; //first move
 	this.jumped = false;
 	this.getMoves = function(){
@@ -205,6 +248,7 @@ function Piece (player, color, type, board, column, row) {
 	};
 	break;
     case KING:
+	this.player.king = this;
 	//actually identical to checkKnightSquare
 	this.checkKingSquare = function(c,r) {
 	    if (squareExists(c,r)) {
