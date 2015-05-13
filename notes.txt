@@ -1,5 +1,7 @@
 Notes
 
+- IMPORTANT: the sprites for the pieces are NOT tied to the objects yet. They need to be.
+- Need to find a way to identify the piece attacking the king
 - Need to get server set up soon
 - A turn will go as follows:
  - Before the game, generate the moves for white.
@@ -10,4 +12,4 @@ Notes
  - Turn end. Next player's turn.
 - At any time, if a player's clock hits 0, end the game and return a flag.
 - Maybe find a way to process moves locally?
-
+- Does bughouse ever stalemate?
