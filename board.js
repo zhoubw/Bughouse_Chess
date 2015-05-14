@@ -341,21 +341,6 @@ var loadPiecesR = function(i, j){
     loadPiecesR(i,j+1);
 }
 
-
-<<<<<<< HEAD
-=======
-makeLines(ctx1);
-makeLines(ctx2);
-makeSquares(ctx1);
-makeSquares(ctx2);
-
-Init();
-loadPieces();
-
-
-
-
->>>>>>> 86ba6f8c6406f82ce2519859fee28e6dcf96fe8c
 var hMoves = function(piece){
     piece.getMoves();
     for (var i = 0;i<piece.availableMoves.length;i++){
@@ -404,12 +389,9 @@ function click1(e,d){
 
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
-<<<<<<< HEAD
     ctx1.strokeStyle = "#0000FF";    
     ctx1.strokeRect(x+2,y+2,46,46);
-=======
     ctx1.globalAlpha=0.2;
->>>>>>> 86ba6f8c6406f82ce2519859fee28e6dcf96fe8c
     ctx1.fillStyle = "#00FF00";
     ctx1.fillRect(x+1,y+1,48,48);
     //oldx[0] = x;
