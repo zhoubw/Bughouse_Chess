@@ -342,6 +342,8 @@ var loadPiecesR = function(i, j){
 }
 
 
+<<<<<<< HEAD
+=======
 makeLines(ctx1);
 makeLines(ctx2);
 makeSquares(ctx1);
@@ -353,10 +355,15 @@ loadPieces();
 
 
 
+>>>>>>> 86ba6f8c6406f82ce2519859fee28e6dcf96fe8c
 var hMoves = function(piece){
     piece.getMoves();
     for (var i = 0;i<piece.availableMoves.length;i++){
-	hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
+	if (piece.board==1){
+	    hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
+	}else{
+	    hSquare(xplace[7-(x/50)]+yplace[7-(y/50)]);
+	}
     }
 }
 
@@ -393,10 +400,16 @@ function click1(e,d){
             ctx1.fillRect(oldx+1,oldy+1,48,48);
         }
     }
-       //for resetting square color
+    //for resetting square color
+
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
+<<<<<<< HEAD
+    ctx1.strokeStyle = "#0000FF";    
+    ctx1.strokeRect(x+2,y+2,46,46);
+=======
     ctx1.globalAlpha=0.2;
+>>>>>>> 86ba6f8c6406f82ce2519859fee28e6dcf96fe8c
     ctx1.fillStyle = "#00FF00";
     ctx1.fillRect(x+1,y+1,48,48);
     //oldx[0] = x;
@@ -407,6 +420,7 @@ function click1(e,d){
 	//resetSquare(oldSquare);
     //}
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
+    hMoves(BoardA[x/50][y/50]);
     console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
 };
 
@@ -434,19 +448,18 @@ function click2(e,d){
      //for resetting square color
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
+    ctx2.strokeStyle = "#0000FF";    
+    ctx2.strokeRect(x+2,y+2,46,46);
     ctx2.fillStyle = "#00FF00";
     //oldx[1] = x;
     //oldy[1] = y;
     $('#place').html(oldSquare + " - " + xplace[7-(x/50)] + yplace[7-(y/50)]);
     oldSquare = xplace[7-(x/50)] + yplace[7-(y/50)];
     console.log(xplace[7-(x/50)]+yplace[7-(y/50)]);
+    ctx2.strokeStype = "#000000";
 };
 
-console.log('done');
-console.log('var a = new Piece(white_A,white_A.color,Piece name,board[1 or 2], column[0 to 7], row[0 to 7])');
-
-
-function getMousePos(canvas, evt) {
+var getMousePos = function(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
         x: evt.clientX - rect.left,
@@ -454,6 +467,10 @@ function getMousePos(canvas, evt) {
     };
 }
 
+$("#load").on('click',function(e){
+    console.log('load');
+    loadPieces();
+});
 
 board1.addEventListener('mousedown', function(evt){
     var mousePos = getMousePos(board1,evt);
@@ -467,3 +484,17 @@ board2.addEventListener('mousedown', function(evt){
     click2(evt,mousePos);
     console.log(mousePos);
 }, false);
+
+window.onload = function(){
+    ctx1.strokeStyle="#000000";
+    ctx2.strokeStyle="#000000";
+    makeLines(ctx1);
+    makeLines(ctx2);
+    makeSquares(ctx1);
+    makeSquares(ctx2);
+    //console.log("Function logs:");
+    //console.log(loadPieces)
+    Init();
+    loadPieces();
+    console.log("loading");
+};
