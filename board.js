@@ -7,6 +7,24 @@ var board2 = $('#board2')[0];
 var ctx1 = $('#board1')[0].getContext("2d");
 var ctx2 = $('#board2')[0].getContext("2d");
 var oldSquare = '00';
+var lastPiece;
+var move = false;
+var colored = [ 'a1','a3','a5','a7',
+                'b2','b4','b6','b8',
+                'c1','c3','c5','c7',
+                'd2','d4','d6','d8',
+                'e1','e3','e5','e7',
+                'f2','f4','f6','f8',
+                'g1','g3','g5','g7',
+                'h2','h4','h6','h8',
+                'A1','A3','A5','A7',
+                'B2','B4','B6','B8',
+                'C1','C3','C5','C7',
+                'D2','D4','D6','D8',
+                'E1','E3','E5','E7',
+                'F2','F4','F6','F8',
+                'G1','G3','G5','G7',
+                'H2','H4','H6','H8']
 var loaded = [false,false,false,false,false,false,false,false,false,false,false,false];
 var wp = new Image(48,48);
 wp.src = "chesspieces/alpha/wP.png";
@@ -61,7 +79,6 @@ var makeSquares = function(ctx){
         }
     }
 };
-
 
 var clicker = function(e,ctx,d){
     if (oldx%100==50){
@@ -222,17 +239,26 @@ var hSquare  = function(coord){
 
 var resetSquare = function(coord){
     var arr = getCoords(coord);
-    var ctx = ctx2;
     if (arr[2]==1){
-	ctx = ctx1;
-	var imgd = ctx.getImageData(arr[0],arr[1],1,1).data;
-	if (imgd[1]=='FF' && imgd[2]=='FF'){
-	    ctx1.fillStyle = "#FFFFFF";
-	    ctx1.fillRect(arr[0], arr[1], 48, 48);
-	}else{
-	    ctx1.fillStyle = "#FF9999";
-	    ctx1.fillRect(arr[0], arr[1], 48, 48);
-	}
+        ctx1.globalAlpha=1.0;
+        if (colored.indexOf(coord)==-1){
+            ctx1.fillStyle="#FFFFFF";
+            ctx1.fillRect(arr[0],arr[1],48,48);
+        }else{
+            ctx1.fillStyle="#FF9999";
+            ctx1.fillRect(arr[0],arr[1],48,48);
+        }
+        ctx1.globalAlpha=0.0;
+    }else{
+        ctx2.globalAlpha=1.0;
+        if (colored.indexOf(coord)==-1){
+            ctx2.fillStyle="#FFFFFF";
+            ctx2.fillRect(arr[0],arr[1],48,48);
+        }else{
+            ctx2.fillStyle="#FF9999";
+            ctx2.fillRect(arr[0],arr[1],48,48);
+        }
+        ctx2.globalAlpha=0.0;
     }
 }    
 
@@ -244,29 +270,6 @@ function sleep(milliseconds) {
       break;
     }
   }
-}
-
-var addPiece = function(piece,x,y){
-    ctx = ctx1;
-    if (piece.board == 2){
-	ctx = ctx2;
-    }
-    switch (piece.type){
-    case PAWN:
-	if (piece.color){
-	    ctx.drawImage(wp,x,y,48,48);
-	}else{
-	    ctx.drawImage(bp,x,y,48,48);
-	}
-	break;
-    case ROOK:
-	if (piece.color){
-	    ctx.drawImage(wr,x,y,48,48);
-	}else{
-	    ctx.drawIamge(br,x,y,48,48);
-	}
-	break;
-    }    
 }
 
 var loadPieces = function(){
@@ -333,10 +336,10 @@ var loadPiecesR = function(i, j){
 	addPiece(BoardB[i][j]);
     }
     if (i==8){
-	return;
+	   return;
     }
     if (j==8){
-	loadPiecesR(i+1,0);
+	   loadPiecesR(i+1,0);
     }
     loadPiecesR(i,j+1);
 }
@@ -344,21 +347,33 @@ var loadPiecesR = function(i, j){
 var hMoves = function(piece){
     piece.getMoves();
     for (var i = 0;i<piece.availableMoves.length;i++){
-	if (piece.board==1){
-	    hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
-	}else{
-	    hSquare(xplace[7-(x/50)]+yplace[7-(y/50)]);
-	}
+    	if (piece.board==1){
+    	    hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
+    	}else{
+    	    hSquare(xplace[7-(x/50)]+yplace[7-(y/50)]);
+    	}
     }
 }
 
-
-
-
-
-
-
-
+var legal = function(piece,coord){
+    piece.getMoves();
+    var amoves = piece.availableMoves;
+    if (piece.board==1){
+        for (var i=0;i<piece.availableMoves.length;i++){
+            amoves[i]=xplace[piece.availableMoves[i][0]].toLowerCase()+yplace[piece.availableMoves[i][1]];
+        }
+        if (amoves.indexOf(coord)==-1){
+            return false;
+        }return true;
+    }else{
+        for (var i=0;i<piece.availableMoves.length;i++){
+            amoves[i]=xplace[piece.availableMoves[i][0]]+yplace[piece.availableMoves[i][1]];
+        }
+        if (amoves.indexOf(coord)==-1){
+            return false;
+        }return true;
+    }
+}
 
 
 
@@ -394,17 +409,28 @@ function click1(e,d){
     ctx1.globalAlpha=0.2;
     ctx1.fillStyle = "#00FF00";
     ctx1.fillRect(x+1,y+1,48,48);
-    //oldx[0] = x;
-    //oldy[0] = y;
     $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
-    //if (oldSquare != '00'){
-	//addPiece(xplace[x/50].toLowerCase() + yplace[y/50],'PAWN');
-	//resetSquare(oldSquare);
-    //}
+
+    if (move){
+        if (legal(BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] , xplace[x/50].toLowerCase() + yplace[y/50])){
+            resetSquare(oldSquare);
+            BoardA[x/50][y/50] = BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))];
+            BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] = 0;
+            ctx1.fillRect(x+1,y+1,48,48);
+        }
+        move = false;
+    };
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
     hMoves(BoardA[x/50][y/50]);
     console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
-};
+
+    if (BoardA[x/50][y/50] != 0){
+        move = true;
+    }else{
+        move = false;
+    }
+    console.log(BoardA);
+}
 
 
 
@@ -436,9 +462,26 @@ function click2(e,d){
     //oldx[1] = x;
     //oldy[1] = y;
     $('#place').html(oldSquare + " - " + xplace[7-(x/50)] + yplace[7-(y/50)]);
+
+    if (move){
+        if (legal(BoardB[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] , xplace[7-(x/50)] + yplace[7-(y/50)])) {
+            resetSquare(oldSquare);
+            BoardB[x/50][y/50] = BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))];
+            BoardB[xplace.indexOf(oldSquare.substr(0,1))][yplace.indexOf(oldSquare.substr(1,1))] = 0;
+            ctx2.fillRect(x+1,y+1,48,48);
+        }
+        move = false;
+    };
+
     oldSquare = xplace[7-(x/50)] + yplace[7-(y/50)];
     console.log(xplace[7-(x/50)]+yplace[7-(y/50)]);
     ctx2.strokeStype = "#000000";
+
+    if (BoardB[x/50][y/50] != 0){
+        move = true;
+    }else{
+        move = false;
+    }
 };
 
 var getMousePos = function(canvas, evt) {
