@@ -70,6 +70,7 @@ black_A.setPartner(black_B);
 white_B.setOpponent(black_B);
 
 function Piece (player, color, type, board, column, row) {
+    //DROPPED NOT FINISHED
     //0-7, -1 if spare
     this.player = player; //what player this piece belongs to
     this.type = type;
@@ -266,11 +267,13 @@ function Piece (player, color, type, board, column, row) {
 	    }
 	    return 0;
 	};
-	//checks if a square is attacked.
+	//checks if a square is attacked, and what is attacking it.
 	//the slow but safe way to do it:
 	// - check ALL the pieces on this board
 	// - if they have a move to that square, it's not safe
-	this.isSquareSafe = function(c,r) {
+	//returns references to all pieces attacking the square
+	this.squareThreats = function(c,r) {
+	    var threats = [];
 	    for (var x = 0; x < 8; x++) {
 		for (var y = 0; y < 8; y++) {
 		    var target = this.board[x][y];
@@ -280,7 +283,7 @@ function Piece (player, color, type, board, column, row) {
 			    for (var i = 0; i<target.availableMoves.length; i++) {
 				if (target.availableMoves[i][0] == c) {
 				    if (target.availableMoves[i][1] == r) {
-					return false;
+					threats.push(target);
 				    }
 				}
 			    }
@@ -288,23 +291,30 @@ function Piece (player, color, type, board, column, row) {
 		    }
 		}
 	    }
-	    return true;
+	    return threats;
 	};
-	//performs checkSafeSquare() on the king's square
-	//because the king can be hung in this game, inCheck() will not eliminate unsafe moves
-	this.inCheck = function() {
-	    return !isSquareSafe(this.column, this.row);
+	//returns if the square is safe
+	this.isSquareSafe = function(c,r) {
+	    return squareThreats(c,r).length == 0;
 	};
 	//if the king is in check and all squares around him are unsafe/occupied AND the enemy king is not in check,
 	//AND any piece that would save the king is pinned,
 	//checkmate = true
 	this.checkmate = function() {
-	    if (!inCheck()) {
-		return false;
-	    }
 	    //unfinished
+	    //not calling isSquareSafe because that would involve another 2D array search
+	    var threats = squareThreats(this.column, this.row);
+	    if (threats.length == 0) {
+		return false; //not in check
+	    }
+	    if (threats.length == 1) { //the king can try to block or eliminate the threat with another piece only if one piece checks
+		
+	    }
+	    
 	};
 	this.getMoves = function() {
+	    //checkmate will probably be called here with the checkKingSquare
+	    
 	    this.availableMoves.length = 0; //clear array of moves
 
 	    checkKingSquare(this.column, this.row+1);
@@ -373,7 +383,7 @@ function Piece (player, color, type, board, column, row) {
 	    return 0;
 	};
 	this.getMoves = function() {
-	    this.availableMove.length = 0; //clear array of moves
+	    this.availableMoves.length = 0; //clear array of moves
 
 	    this.checkKnightSquare(this.column+1,this.row+2);
 	    this.checkKnightSquare(this.column+2,this.row+1);
