@@ -272,76 +272,112 @@ function sleep(milliseconds) {
   }
 }
 
+var drawPiece = function(piece){
+    if (piece.board==1){
+	switch (piece.type){
+	case PAWN:
+	    if (piece.color){
+		ctx1.drawImage(wp,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }else{
+		ctx1.drawImage(bp,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }
+	    break;
+	case ROOK:
+	    if (piece.color){
+		ctx1.drawImage(wr,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }else{
+		ctx1.drawImage(br,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }
+	    break;
+	case KNIGHT:
+	    if (piece.color){
+		ctx1.drawImage(wn,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }else{
+		ctx1.drawImage(bn,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }
+	    break;
+	case BISHOP:
+	    if (piece.color){
+		ctx1.drawImage(wb,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }else{
+		ctx1.drawImage(bb,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }
+	    break;
+	case QUEEN:
+	    if (piece.color){
+		ctx1.drawImage(wq,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }else{
+		ctx1.drawImage(bq,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }
+	    break;
+	case KING:
+	    if (piece.color){
+		ctx1.drawImage(wk,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }else{
+		ctx1.drawImage(bk,piece.column*50+1,(7-piece.row)*50+1,48,48);
+	    }
+	    break;
+	}
+    }else{
+	switch (piece.type){
+	case PAWN:
+	    if (piece.color){
+		ctx2.drawImage(wp,piece.column*50+1,piece.row*50+1,48,48);
+	    }else{
+		ctx2.drawImage(bp,piece.column*50+1,piece.row*50+1,48,48);
+	    }
+	    break;
+	case ROOK:
+	    if (piece.color){
+		ctx2.drawImage(wr,piece.column*50+1,piece.row*50+1,48,48);
+	    }else{
+		ctx2.drawImage(br,piece.column*50+1,piece.row*50+1,48,48);
+	    }
+	    break;
+	case KNIGHT:
+	    if (piece.color){
+		ctx2.drawImage(wn,piece.column*50+1,piece.row*50+1,48,48);
+	    }else{
+		ctx2.drawImage(bn,piece.column*50+1,piece.row*50+1,48,48);
+	    }
+	    break;
+	case BISHOP:
+	    if (piece.color){
+		ctx2.drawImage(wb,piece.column*50+1,piece.row*50+1,48,48);
+	    }else{
+		ctx2.drawImage(bb,piece.column*50+1,piece.row*50+1,48,48);
+	    }
+	    break;
+	case QUEEN:
+	    if (piece.color){
+		ctx2.drawImage(wq,piece.column*50+1,piece.row*50+1,48,48);
+	    }else{
+		ctx2.drawImage(bq,piece.column*50+1,piece.row*50+1,48,48);
+	    }
+	    break;
+	case KING:
+	    if (piece.color){
+		ctx2.drawImage(wk,piece.column*50+1,piece.row*50+1,48,48);
+	    }else{
+		ctx2.drawImage(bk,piece.column*50+1,piece.row*50+1,48,48);
+	    }
+	    break;
+	}
+    }
+}
+	    
+
 var loadPieces = function(){
-    console.log('start');
-    /*
-    for (var i = 0;i<8;i++){
+    for (var i=0;i<8;i++){
 	for (var j=0;j<8;j++){
 	    if (BoardA[i][j] != 0){
-		addPiece(BoardA[i][j],i*50+1,400-(j+50+1));
-		addPiece(BoardB[i][j],400-(i*50+1),j+50+1);
+		drawPiece(BoardA[i][j]);
+	    }
+	    if (BoardB[i][j] != 0){
+		drawPiece(BoardB[i][j]);
 	    }
 	}
     }
-    */
-    ctx1.drawImage(wr,1,351,48,48);
-    ctx2.drawImage(wr,351,1,48,48);
-    ctx1.drawImage(wr,351,351,48,48);
-    ctx2.drawImage(wr,1,1,48,48);
-    ctx1.drawImage(br,1,1,48,48);
-    ctx2.drawImage(br,1,351,48,48);
-    ctx1.drawImage(br,351,1,48,48);
-    ctx2.drawImage(br,351,351,48,48);
-    
-    ctx1.drawImage(wn,51,351,48,48);
-    ctx2.drawImage(wn,301,1,48,48);
-    ctx1.drawImage(wn,301,351,48,48);
-    ctx2.drawImage(wn,51,1,48,48);
-    ctx1.drawImage(bn,51,1,48,48);
-    ctx2.drawImage(bn,301,351,48,48);
-    ctx1.drawImage(bn,301,1,48,48);
-    ctx2.drawImage(bn,51,351,48,48);
-    
-    ctx1.drawImage(wb,101,351,48,48);
-    ctx2.drawImage(wb,251,1,48,48);
-    ctx1.drawImage(wb,251,351,48,48);
-    ctx2.drawImage(wb,101,1,48,48);
-    ctx1.drawImage(bb,101,1,48,48);
-    ctx2.drawImage(bb,251,351,48,48);
-    ctx1.drawImage(bb,251,1,48,48);
-    ctx2.drawImage(bb,101,351,48,48);
-
-    ctx1.drawImage(wk,151,351,48,48);
-    ctx2.drawImage(wk,201,1,48,48);
-    ctx1.drawImage(wq,201,351,48,48);
-    ctx2.drawImage(wq,151,1,48,48);
-    ctx2.drawImage(bk,151,351,48,48);
-    ctx1.drawImage(bk,201,1,48,48);
-    ctx2.drawImage(bq,201,351,48,48);
-    ctx1.drawImage(bq,151,1,48,48);
-
-    for (var a = 0;a<8;a++){
-	ctx1.drawImage(wp,(a*50)+1,301,48,48);
-	ctx1.drawImage(bp,(a*50)+1,51,48,48);
-	ctx2.drawImage(bp,(a*50)+1,301,48,48);
-	ctx2.drawImage(wp,(a*50)+1,51,48,48);
-    }
-    console.log('end');
-}
-	    
-var loadPiecesR = function(i, j){
-    
-    if(BoardA[i][j] != 0){
-	addPiece(BoardA[i][j]);
-	addPiece(BoardB[i][j]);
-    }
-    if (i==8){
-	   return;
-    }
-    if (j==8){
-	   loadPiecesR(i+1,0);
-    }
-    loadPiecesR(i,j+1);
 }
 
 var hMoves = function(piece){
@@ -412,14 +448,15 @@ function click1(e,d){
     $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
 
     if (move){
-        if (legal(BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] , xplace[x/50].toLowerCase() + yplace[y/50])){
-            resetSquare(oldSquare);
-            BoardA[x/50][y/50] = BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))];
-            BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] = 0;
-            ctx1.fillRect(x+1,y+1,48,48);
-        }
+	// if (legal(BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] , xplace[x/50].toLowerCase() + yplace[y/50])){
+        resetSquare(oldSquare);
+        BoardA[x/50][y/50] = BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))];
+        BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] = 0;
+	drawPiece(BoardA[x/50][y/50]);
+        //}
         move = false;
     };
+    
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
     hMoves(BoardA[x/50][y/50]);
     console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
@@ -517,9 +554,6 @@ window.onload = function(){
     makeLines(ctx2);
     makeSquares(ctx1);
     makeSquares(ctx2);
-    //console.log("Function logs:");
-    //console.log(loadPieces)
     Init();
     loadPieces();
-    console.log("loading");
 };
