@@ -193,27 +193,31 @@ function Piece (player, color, type, board, column, row) {
 	//PROMOTION NOT FINISHED!!
 	this.moved = 0; //first move
 	this.jumped = false;
+	this.direction = 1;
+	if (this.color == BLACK) {
+	    this.direction = -1;
+	}
+	
 	this.getMoves = function(){
 	    //possible moves will be an array of [column, row, move 0/capture 1/en passant 2/jump 3]
 	    this.availableMoves.length = 0; //clear array of moves
-
 	    //first move
 	    if (this.moved == 0) {
-		if (isSquareEmpty(this.board, this.column, this.row + 2)) {
-		    this.availableMoves.push([this.column, this.row + 2, JUMP]);
+		if (isSquareEmpty(this.board, this.column, this.row + (2*this.direction))) {
+		    this.availableMoves.push([this.column, this.row + (2*this.direction), JUMP]);
 		}
 	    }
-	    if (isSquareEmpty(this.board, this.column, this.row + 1)) {
-		this.availableMoves.push([this.column, this.row + 1, MOVE]);
+	    if (isSquareEmpty(this.board, this.column, this.row + (1*this.direction))) {
+		this.availableMoves.push([this.column, this.row + (1*this.direction), MOVE]);
 	    }
 
 	    //capturing a piece for a pawn is different
 	    //left
 	    if (this.column > 0) {
-		if (!isSquareEmpty(this.board, this.column - 1, this.row + 1)) {
-		    var target = getPiece(this.board, this.column - 1, this.row + 1);
+		if (!isSquareEmpty(this.board, this.column - 1, this.row + (1*this.direction))) {
+		    var target = getPiece(this.board, this.column - 1, this.row + (1*this.direction));
 		    if (target.color != this.color) {
-			this.availableMoves.push([this.column - 1, this.row + 1, CAPTURE]);
+			this.availableMoves.push([this.column - 1, this.row + (1*this.direction), CAPTURE]);
 		    }
 		}
 		//en passant left
@@ -221,17 +225,17 @@ function Piece (player, color, type, board, column, row) {
 		    var target = getPiece(this.board, this.column - 1, this.row);
 		    if (target.type == PAWN && target.color != this.color) {
 			if (target.moved == 1 && jumped) {
-			    this.availableMoves.push([this.column - 1, this.row + 1, EN_PASSANT]);
+			    this.availableMoves.push([this.column - 1, this.row + (1*this.direction), EN_PASSANT]);
 			}
 		    }
 		}
 	    }
 	    //right
 	    if (this.column < 7) {
-		if (!isSquareEmpty(this.board, this.column + 1, this.row + 1)) {
-		    var target = getPiece(this.board, this.column + 1, this.row + 1);
+		if (!isSquareEmpty(this.board, this.column + 1, this.row + (1*this.direction))) {
+		    var target = getPiece(this.board, this.column + 1, this.row + (1*this.direction));
 		    if (target.color != this.color) {
-			this.availableMoves.push([this.column + 1, this.row + 1, CAPTURE]);
+			this.availableMoves.push([this.column + 1, this.row + (1*this.direction), CAPTURE]);
 		    }
 		}
 		//en passant right
@@ -239,7 +243,7 @@ function Piece (player, color, type, board, column, row) {
 		    var target = getPiece(this.board, this.column + 1, this.row);
 		    if (target.type == PAWN && target.color != this.color) {
 			if (target.moved == 1 && jumped) {
-			    this.availableMoves.push([this.column + 1, this.row + 1, EN_PASSANT]);
+			    this.availableMoves.push([this.column + 1, this.row + (1*this.direction), EN_PASSANT]);
 			}
 		    }
 		}
@@ -317,14 +321,14 @@ function Piece (player, color, type, board, column, row) {
 	    
 	    this.availableMoves.length = 0; //clear array of moves
 
-	    checkKingSquare(this.column, this.row+1);
-	    checkKingSquare(this.column+1, this.row+1);
-	    checkKingSquare(this.column+1, this.row);
-	    checkKingSquare(this.column+1, this.row-1);
-	    checkKingSquare(this.column, this.row-1);
-	    checkKingSquare(this.column-1, this.row-1);
-	    checkKingSquare(this.column-1, this.row);
-	    checkKingSquare(this.column-1, this.row+1);
+	    this.checkKingSquare(this.column, this.row+1);
+	    this.checkKingSquare(this.column+1, this.row+1);
+	    this.checkKingSquare(this.column+1, this.row);
+	    this.checkKingSquare(this.column+1, this.row-1);
+	    this.checkKingSquare(this.column, this.row-1);
+	    this.checkKingSquare(this.column-1, this.row-1);
+	    this.checkKingSquare(this.column-1, this.row);
+	    this.checkKingSquare(this.column-1, this.row+1);
 	    
 	};
 	break;
