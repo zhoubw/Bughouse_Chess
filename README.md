@@ -9,13 +9,14 @@
   - [x] Piece and board interaction
   - [ ] King, check, and endgame
   - [ ] Dropping pieces
-- [ ] Set up node.js server
+- [ ] Set up server
+  - [ ] Login
+  - [ ] Multiple rooms
 - [x] Chessboard - 75%
   - [x] Board
   - [x] Highlight square + coordinates
   - [ ] Setup
   - [ ] Working 2v2 site
-  - [ ] Multiple rooms
 
 ## Description
 * Bughouse chess is a chess variation that involves four players in teams of two and two boards.
