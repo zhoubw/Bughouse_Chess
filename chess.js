@@ -101,6 +101,9 @@ function Piece (player, color, type, board, column, row) {
 	
     };
     this.move = function(column, row) {
+	this.getMoves();
+	//move and capture should be separated
+	//drop should be called in here
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
@@ -333,7 +336,7 @@ function Piece (player, color, type, board, column, row) {
 		for (var x = this.column; x < threats[0].column; x += x_div) {
 		    for (var y = this.row; y < threats[0].row; y += y_div) {
 			//unfinished
-			var defenders = squareThreats(x,y);
+			var defenders = this.squareThreats(x,y);
 			for (var i = 0; i < defenders.length; i++) {
 			    if (!defenders[i].pinned) {
 				return false;
@@ -533,4 +536,38 @@ function getPiece(board, column, row) {
 	return BoardA[column][row];
     }
     return BoardB[column][row];
+}
+
+function printBoard(board) {
+    var retStr = "";
+    if (board == 1) {
+	for (var y = 0; y < 8; y++) {
+	    for (var x = 0; x < 8; x++) {
+		var square = BoardA[x][y];
+		if (square == 0) {
+		    retStr = retStr + "-";
+		}
+		else {
+		    retStr = retStr + square.type;
+		}
+	    }
+	    retStr = retStr + "\n";
+	}
+    }
+    else {
+	for (var y = 0; y < 8; y++) {
+	    for (var x = 0; x < 8; x++) {
+		var square = BoardB[x][y];
+		if (square == 0) {
+		    retStr = retStr + "-";
+		}
+		else {
+		    retStr = retStr + square.type;
+		}
+	    }
+	    retStr = retStr + "\n";
+	}
+	
+    }
+    console.log(retStr);
 }
