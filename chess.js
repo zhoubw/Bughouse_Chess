@@ -21,6 +21,8 @@ var WHITE_B = 2;
 var BLACK_B = 3;
 
 //these boards are sideways; access is [column][row]
+//we're using numbers for boards because of some old implementation
+//this is board 1
 var BoardA = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
@@ -30,6 +32,7 @@ var BoardA = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0]];
 
+//board 2
 var BoardB = [[0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
 	      [0,0,0,0,0,0,0,0],
