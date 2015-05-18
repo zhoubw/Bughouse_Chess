@@ -9,6 +9,7 @@ var ctx2 = $('#board2')[0].getContext("2d");
 var oldSquare = '00';
 var lastPiece;
 var move = false;
+var oldCoord = [0,0];
 var colored = [ 'a1','a3','a5','a7',
                 'b2','b4','b6','b8',
                 'c1','c3','c5','c7',
@@ -52,9 +53,7 @@ bq.src = "chesspieces/alpha/bQ.png";
 var bk = new Image(48,48);
 bk.src = "chesspieces/alpha/bK.png";
 
-
-
-var makeLines = function(ctx){
+var makeLines = function(ctx){ //makeLines and makeSquares is initial load of board
     for (var i=0;i<=400;i+=50){
         ctx.moveTo(0,i);
         ctx.lineTo(400,i);
@@ -79,34 +78,6 @@ var makeSquares = function(ctx){
         }
     }
 };
-
-var clicker = function(e,ctx,d){
-    if (oldx%100==50){
-        if (oldy%100==0){
-            ctx.fillStyle = "#0101FF";
-            ctx.fillRect(oldx+1,oldy+1,48,48);
-        }else{
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(oldx+1,oldy+1,48,48);
-        }
-    }else{
-        if (oldy%100==50){
-            ctx.fillStyle = "#0101FF";
-            ctx.fillRect(oldx+1,oldy+1,48,48);
-        }else{
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(oldx+1,oldy+1,48,48);
-        }
-    }
-    var x = d['x'] - (d['x']%50);
-    var y = d['y'] - (d['y']%50);
-    ctx.fillStyle = "#00FF00";
-    ctx.fillRect(x+1,y+1,48,48);
-    oldx = x;
-    oldy = y;
-    console.log(xplace[x/50]+yplace[y/50]);
-}
-
 
 var getCoords = function(coord){ //returns array of [xcoor,ycoor,board#]
     var lett = coord.substr(0,1);
@@ -226,7 +197,7 @@ var getCoords = function(coord){ //returns array of [xcoor,ycoor,board#]
     return [xc,yc,b];
 }
 
-var hSquare  = function(coord){
+var hSquare  = function(coord){ //use to highlight certain squares
     var arr = getCoords(coord);
     if (arr[2]==1){
 	ctx1.fillStyle="#00FF00";
@@ -237,7 +208,7 @@ var hSquare  = function(coord){
     }
 }
 
-var resetSquare = function(coord){
+var resetSquare = function(coord){ //resets square to original color
     var arr = getCoords(coord);
     if (arr[2]==1){
         ctx1.globalAlpha=1.0;
@@ -260,61 +231,51 @@ var resetSquare = function(coord){
         }
         ctx2.globalAlpha=0.0;
     }
-}    
-
-
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
 }
 
 var drawPiece = function(piece){
-    if (piece.board==1){
+    if (piece.board==2){
 	switch (piece.type){
 	case PAWN:
 	    if (piece.color){
-		ctx1.drawImage(wp,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(wp,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bp,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(bp,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }
 	    break;
 	case ROOK:
 	    if (piece.color){
-		ctx1.drawImage(wr,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(wr,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }else{
-		ctx1.drawImage(br,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(br,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }
 	    break;
 	case KNIGHT:
 	    if (piece.color){
-		ctx1.drawImage(wn,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(wn,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bn,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(bn,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }
 	    break;
 	case BISHOP:
 	    if (piece.color){
-		ctx1.drawImage(wb,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(wb,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bb,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(bb,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }
 	    break;
 	case QUEEN:
 	    if (piece.color){
-		ctx1.drawImage(wq,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(wq,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bq,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(bq,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }
 	    break;
 	case KING:
 	    if (piece.color){
-		ctx1.drawImage(wk,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(wk,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bk,piece.column*50+1,(7-piece.row)*50+1,48,48);
+		ctx2.drawImage(bk,piece.column*50+1,(7-piece.row)*50+1,48,48);
 	    }
 	    break;
 	}
@@ -322,44 +283,44 @@ var drawPiece = function(piece){
 	switch (piece.type){
 	case PAWN:
 	    if (piece.color){
-		ctx2.drawImage(wp,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wp,piece.column*50+1,piece.row*50+1,48,48);
 	    }else{
-		ctx2.drawImage(bp,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bp,piece.column*50+1,piece.row*50+1,48,48);
 	    }
 	    break;
 	case ROOK:
 	    if (piece.color){
-		ctx2.drawImage(wr,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wr,piece.column*50+1,piece.row*50+1,48,48);
 	    }else{
-		ctx2.drawImage(br,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(br,piece.column*50+1,piece.row*50+1,48,48);
 	    }
 	    break;
 	case KNIGHT:
 	    if (piece.color){
-		ctx2.drawImage(wn,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wn,piece.column*50+1,piece.row*50+1,48,48);
 	    }else{
-		ctx2.drawImage(bn,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bn,piece.column*50+1,piece.row*50+1,48,48);
 	    }
 	    break;
 	case BISHOP:
 	    if (piece.color){
-		ctx2.drawImage(wb,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wb,piece.column*50+1,piece.row*50+1,48,48);
 	    }else{
-		ctx2.drawImage(bb,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bb,piece.column*50+1,piece.row*50+1,48,48);
 	    }
 	    break;
 	case QUEEN:
 	    if (piece.color){
-		ctx2.drawImage(wq,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wq,piece.column*50+1,piece.row*50+1,48,48);
 	    }else{
-		ctx2.drawImage(bq,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bq,piece.column*50+1,piece.row*50+1,48,48);
 	    }
 	    break;
 	case KING:
 	    if (piece.color){
-		ctx2.drawImage(wk,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wk,piece.column*50+1,piece.row*50+1,48,48);
 	    }else{
-		ctx2.drawImage(bk,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bk,piece.column*50+1,piece.row*50+1,48,48);
 	    }
 	    break;
 	}
@@ -381,7 +342,12 @@ var loadPieces = function(){
 }
 
 var hMoves = function(piece){
-    piece.getMoves();
+    if (piece.availableMoves = []){
+	piece.getMoves();
+	if (piece.availableMoves = []){
+	    return;
+	}
+    }
     for (var i = 0;i<piece.availableMoves.length;i++){
     	if (piece.board==1){
     	    hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
@@ -391,78 +357,36 @@ var hMoves = function(piece){
     }
 }
 
-var legal = function(piece,coord){
-    piece.getMoves();
-    var amoves = piece.availableMoves;
-    if (piece.board==1){
-        for (var i=0;i<piece.availableMoves.length;i++){
-            amoves[i]=xplace[piece.availableMoves[i][0]].toLowerCase()+yplace[piece.availableMoves[i][1]];
-        }
-        if (amoves.indexOf(coord)==-1){
-            return false;
-        }return true;
-    }else{
-        for (var i=0;i<piece.availableMoves.length;i++){
-            amoves[i]=xplace[piece.availableMoves[i][0]]+yplace[piece.availableMoves[i][1]];
-        }
-        if (amoves.indexOf(coord)==-1){
-            return false;
-        }return true;
-    }
-}
-
-
-
-
-
-
 
 function click1(e,d){
     
-    if (oldx[0]%100==50){
-        if (oldy[0]%100==0){
-            ctx1.fillStyle = "#FF9999";
-            ctx1.fillRect(oldx+1,oldy+1,48,48);
-        }else{
-            ctx1.fillStyle = "#FFFFFF";
-            ctx1.fillRect(oldx+1,oldy+1,48,48);
-        }
-    }else{
-        if (oldy[0]%100==50){
-            ctx1.fillStyle = "#FF9999";
-            ctx1.fillRect(oldx+1,oldy+1,48,48);
-        }else{
-            ctx1.fillStyle = "#FFFFFF";
-            ctx1.fillRect(oldx+1,oldy+1,48,48);
-        }
-    }
-    //for resetting square color
-
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
+    
     ctx1.strokeStyle = "#0000FF";    
     ctx1.strokeRect(x+2,y+2,46,46);
     ctx1.globalAlpha=0.2;
     ctx1.fillStyle = "#00FF00";
     ctx1.fillRect(x+1,y+1,48,48);
     $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
-
+    
     if (move){
-	// if (legal(BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] , xplace[x/50].toLowerCase() + yplace[y/50])){
-        resetSquare(oldSquare);
-        BoardA[x/50][y/50] = BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))];
-        BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] = 0;
-	drawPiece(BoardA[x/50][y/50]);
-        //}
-        move = false;
-    };
+	BoardA[oldCoord[0]][oldCoord[1]].move(x/50,y/50);
+	resetSquare(oldSquare);
+	//loadPieces();
+	printBoard(1);
+	//drawPiece(BoardA[x/50][y/50]);
+    }
     
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
+    oldCoord = [x/50,y/50];
     hMoves(BoardA[x/50][y/50]);
     console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
 
     if (BoardA[x/50][y/50] != 0){
-        move = true;
+	//if BoardA[x][y] is a piece
+	move = true;
+	console.log(BoardA[x/50][y/50].availableMoves);
     }else{
         move = false;
     }
