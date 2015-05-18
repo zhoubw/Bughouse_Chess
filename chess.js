@@ -104,27 +104,31 @@ function Piece (player, color, type, board, column, row) {
 	this.getMoves();
 	//move and capture should be separated
 	//drop should be called in here
+	var b = BoardA;
+	if (this.board == 2) {
+	    b = BoardB;
+	}
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
 		if (square[2] == CAPTURE) {
-		    this.board[square[0]][square[1]].column = -1;
-		    this.board[square[0]][square[1]].row = -1;
-		    this.player.partner.spare.push(this.board[square[0]][square[1]]);
-		    this.board[square[0]][square[1]] = 0;
+		    b[square[0]][square[1]].column = -1;
+		    b[square[0]][square[1]].row = -1;
+		    this.player.partner.spare.push(b[square[0]][square[1]]);
+		    b[square[0]][square[1]] = 0;
 		}
 		if (square[2] == EN_PASSANT) {
-		    this.board[square[0]][square[1]-1].column = -1;
-		    this.board[square[0]][square[1]-1].row = -1;
-		    this.player.partner.spare.push(this.board[square[0]][square[1]-1]);
-		    this.board[square[0]][square[1]-1] = 0;
+		    b[square[0]][square[1]-1].column = -1;
+		    b[square[0]][square[1]-1].row = -1;
+		    this.player.partner.spare.push(b[square[0]][square[1]-1]);
+		    b[square[0]][square[1]-1] = 0;
 		}
 		var oldColumn = this.column;
 		var oldRow = this.row;
 		this.column = square[0];
 		this.row = square[1];
-		this.board[square[0]][square[1]] = this.board[oldColumn][oldRow];
-		this.board[oldColumn][oldRow] = 0;
+		b[square[0]][square[1]] = b[oldColumn][oldRow];
+		b[oldColumn][oldRow] = 0;
 		if (square[2] == JUMP) {
 		    this.jumped = true;
 		}
