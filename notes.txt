@@ -14,4 +14,4 @@ Notes
 - Maybe find a way to process moves locally?
 
 - Pawn promotion
-- Drops
+- Drops and interaction
