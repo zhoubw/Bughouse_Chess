@@ -253,19 +253,23 @@ function Piece (player, color, type, board, column, row) {
 	};
 	break;
     case KING:
+	//YOU CAN STILL HANG THE KING - UNFINISHED
+	//If the king is in check, other pieces' moves will not be locked
 	this.player.king = this;
-	//actually identical to checkKnightSquare
+	//almost identical to checkKnightSquare
 	this.checkKingSquare = function(c,r) {
 	    if (squareExists(c,r)) {
-		if (isSquareEmpty(this.board, c, r)) {
-		    this.availableMoves.push([c,r,MOVE]);
-		    return 1;
-		}
-		else {
-		    var target = getPiece(this.board, c, r);
-		    if (target.color != this.color) {
-			this.availableMoves.push([c, r, CAPTURE]);
+		if (isSquareSafe(c,r)) {
+		    if (isSquareEmpty(this.board, c, r)) {
+			this.availableMoves.push([c,r,MOVE]);
 			return 1;
+		    }
+		    else {
+			var target = getPiece(this.board, c, r);
+			if (target.color != this.color) {
+			    this.availableMoves.push([c, r, CAPTURE]);
+			    return 1;
+			}
 		    }
 		}
 	    }
@@ -307,20 +311,38 @@ function Piece (player, color, type, board, column, row) {
 	this.checkmate = function() {
 	    //unfinished
 	    //not calling isSquareSafe because that would involve another 2D array search
+	    //all the pieces attacking the king
 	    var threats = squareThreats(this.column, this.row);
 	    if (threats.length == 0) {
 		return false; //not in check
 	    }
-	    if (threats.length == 1) { //the king can try to block or eliminate the threat with another piece only if one piece checks
-		
+	    if (threats.length == 1) { //the king can try to NEUTRALIZE or INTERCEPT if single-check
+		//NEUTRALIZE:
+		//check pieces attacking the threats; if a piece is not pinned, return false
+		var neutralizers = squareThreats(threats[0].column,threats[0].row);
+		for (var i = 0; i < neutralizers.length; i++) {
+		    if (!neutralizers[i].pinned) {
+			return false;
+		    }
+		}
+		//INTERCEPT:
+		//cannot intercept a knight
+		//check all the pieces attacking squares between the king and threat; if a piece is not pinned, return false
+		var y_div = threats[0].row - this.row;
+		var x_div = threats[0].column - this.column;
+		for (var x = this.column; x < threats[0].column; x += x_div) {
+		    for (var y = this.row; y < threats[0].row; y += y_div) {
+			//unfinished
+			var defenders = squareThreats(x,y);
+			for (var i = 0; i < defenders.length; i++) {
+			    if (!defenders[i].pinned) {
+				return false;
+			    }
+			}
+		    }
+		}
 	    }
-	    
-	};
-	this.getMoves = function() {
-	    //checkmate will probably be called here with the checkKingSquare
-	    
-	    this.availableMoves.length = 0; //clear array of moves
-
+	    //if the king can move. getMoves() functionality will probably be in here
 	    this.checkKingSquare(this.column, this.row+1);
 	    this.checkKingSquare(this.column+1, this.row+1);
 	    this.checkKingSquare(this.column+1, this.row);
@@ -329,6 +351,17 @@ function Piece (player, color, type, board, column, row) {
 	    this.checkKingSquare(this.column-1, this.row-1);
 	    this.checkKingSquare(this.column-1, this.row);
 	    this.checkKingSquare(this.column-1, this.row+1);
+	    if (this.availableMoves.length == 0) {
+		return true;
+	    }
+	    return false;
+	};
+	//this will be called at the end of an opponent's turn
+	this.getMoves = function() {
+	    //checkmate will probably be called here with the checkKingSquare
+	    
+	    this.availableMoves.length = 0; //clear array of moves
+	    this.checkmate(); //checkKingSquare will be called in here
 	    
 	};
 	break;
