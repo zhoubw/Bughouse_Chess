@@ -15,3 +15,9 @@ Notes
 
 - Pawn promotion
 - Drops and interaction
+
+
+Server Notes
+- Example of using server.io
+  	 https://github.com/benas/gamehub.io/blob/master/config/socket.js
+	 https://github.com/benas/gamehub.io/blob/master/initData.js
