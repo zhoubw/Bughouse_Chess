@@ -325,14 +325,14 @@ function Piece (player, color, type, board, column, row) {
 	    //unfinished
 	    //not calling isSquareSafe because that would involve another 2D array search
 	    //all the pieces attacking the king
-	    var threats = squareThreats(this.column, this.row);
+	    var threats = this.squareThreats(this.column, this.row);
 	    if (threats.length == 0) {
 		return false; //not in check
 	    }
 	    if (threats.length == 1) { //the king can try to NEUTRALIZE or INTERCEPT if single-check
 		//NEUTRALIZE:
 		//check pieces attacking the threats; if a piece is not pinned, return false
-		var neutralizers = squareThreats(threats[0].column,threats[0].row);
+		var neutralizers = this.squareThreats(threats[0].column,threats[0].row);
 		for (var i = 0; i < neutralizers.length; i++) {
 		    if (!neutralizers[i].pinned) {
 			return false;
