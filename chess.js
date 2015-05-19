@@ -103,6 +103,7 @@ function Piece (player, color, type, board, column, row) {
 	return col + r.toString();
 	
     };
+    //returns true if move is successful
     this.move = function(column, row) {
 	this.getMoves();
 	//move and capture should be separated
@@ -135,8 +136,10 @@ function Piece (player, color, type, board, column, row) {
 		if (square[2] == JUMP) {
 		    this.jumped = true;
 		}
+		return true;
 	    }
 	}
+	return false;
     };
 
     //used in getMoves, search in one direction
