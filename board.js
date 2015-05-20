@@ -8,7 +8,9 @@ var ctx1 = $('#board1')[0].getContext("2d");
 var ctx2 = $('#board2')[0].getContext("2d");
 var oldSquare = '00';
 var lastPiece;
+var turn = WHITE;
 var move = false;
+var selected = false;
 var oldCoord = [0,0];
 var colored = [ 'a1','a3','a5','a7',
                 'b2','b4','b6','b8',
@@ -211,7 +213,6 @@ var hSquare  = function(coord){ //use to highlight certain squares
 var resetSquare = function(coord){ //resets square to original color
     var arr = getCoords(coord);
     if (arr[2]==1){
-        ctx1.globalAlpha=1.0;
         if (colored.indexOf(coord)==-1){
             ctx1.fillStyle="#FFFFFF";
             ctx1.fillRect(arr[0],arr[1],48,48);
@@ -219,9 +220,7 @@ var resetSquare = function(coord){ //resets square to original color
             ctx1.fillStyle="#FF9999";
             ctx1.fillRect(arr[0],arr[1],48,48);
         }
-        ctx1.globalAlpha=0.0;
     }else{
-        ctx2.globalAlpha=1.0;
         if (colored.indexOf(coord)==-1){
             ctx2.fillStyle="#FFFFFF";
             ctx2.fillRect(arr[0],arr[1],48,48);
@@ -229,11 +228,13 @@ var resetSquare = function(coord){ //resets square to original color
             ctx2.fillStyle="#FF9999";
             ctx2.fillRect(arr[0],arr[1],48,48);
         }
-        ctx2.globalAlpha=0.0;
     }
 }
 
 var drawPiece = function(piece){
+    if (piece == 0){
+	return;
+    }
     if (piece.board==2){
 	switch (piece.type){
 	case PAWN:
@@ -342,9 +343,10 @@ var loadPieces = function(){
 }
 
 var hMoves = function(piece){
-    if (piece.availableMoves = []){
+    if (piece.availableMoves == []){
 	piece.getMoves();
-	if (piece.availableMoves = []){
+	if (piece.availableMoves == []){
+	    console.log("going to return");
 	    return;
 	}
     }
@@ -359,38 +361,59 @@ var hMoves = function(piece){
 
 
 function click1(e,d){
-    
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
+    var coord = [x/50,y/50];
     
-    ctx1.strokeStyle = "#0000FF";    
-    ctx1.strokeRect(x+2,y+2,46,46);
-    ctx1.globalAlpha=0.2;
-    ctx1.fillStyle = "#00FF00";
-    ctx1.fillRect(x+1,y+1,48,48);
-    $('#place').html(oldSquare + ' - ' + xplace[x/50].toLowerCase() + yplace[y/50]);
+    if (!selected){
+	if (isSquareEmpty(1,coord[0],coord[1])){
+	    return;
+	}
+	if (BoardA[coord[0]][coord[1]].color==turn){
+	    hMoves(BoardA[coord[0]][coord[1]]);
+	    selected = true;
+	}else{
+	    selected = false;
+	}
+    }else{
+	
+	//if works -> move piece, reset square, draw piece
+	//if works -> turn = the other one
+	//if doesnt work -> change selected
+	selected = false;
+    }
+
+    console.log("Selected:"+selected);
+    console.log(turn);
+    //ctx1.strokeStyle = "#0000FF";    
+    //ctx1.strokeRect(x+2,y+2,46,46);
+
     
+    /*
     if (move){
-	BoardA[oldCoord[0]][oldCoord[1]].move(x/50,y/50);
-	resetSquare(oldSquare);
-	//loadPieces();
-	printBoard(1);
-	//drawPiece(BoardA[x/50][y/50]);
+	if (BoardA[oldCoord[0]][oldCoord[1]].move(x/50,y/50)){
+	    
+	    resetSquare(oldSquare);
+	    drawPiece(BoardA[oldCoord[0]][oldCoord[1]]);
+	    drawPiece(BoardA[x/50][y/50]);
+	    printBoard(1);
+	}
+	move = false;
     }
     
     oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
     oldCoord = [x/50,y/50];
     hMoves(BoardA[x/50][y/50]);
-    console.log(xplace[x/50].toLowerCase()+yplace[y/50]);
+    console.log(move);
 
     if (BoardA[x/50][y/50] != 0){
-	//if BoardA[x][y] is a piece
 	move = true;
 	console.log(BoardA[x/50][y/50].availableMoves);
     }else{
         move = false;
     }
     console.log(BoardA);
+    */
 }
 
 
