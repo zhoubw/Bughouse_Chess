@@ -463,10 +463,10 @@ function click2(e,d){
 			//draw piece
 			drawPiece(BoardB[coord[0]][coord[1]]);
 			//change turn
-			if (turn == WHITE){
-				turn = BLACK;
+			if (turn2 == WHITE){
+				turn2 = BLACK;
 			}else{
-				turn = WHITE;
+				turn2 = WHITE;
 			}
 		}else{
 			console.log("NOT MOVING");
