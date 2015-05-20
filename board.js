@@ -9,9 +9,12 @@ var ctx2 = $('#board2')[0].getContext("2d");
 var oldSquare = '00';
 var lastPiece;
 var turn = WHITE;
+var turn2 = WHITE;
 var move = false;
 var selected = false;
+var selected2 = false;
 var oldCoord = [0,0];
+var oldCoord2 = [0,0];
 var colored = [ 'a1','a3','a5','a7',
                 'b2','b4','b6','b8',
                 'c1','c3','c5','c7',
@@ -366,21 +369,38 @@ function click1(e,d){
     var coord = [x/50,y/50];
     
     if (!selected){
-	if (isSquareEmpty(1,coord[0],coord[1])){
-	    return;
-	}
-	if (BoardA[coord[0]][coord[1]].color==turn){
-	    hMoves(BoardA[coord[0]][coord[1]]);
-	    selected = true;
-	}else{
-	    selected = false;
-	}
+		if (isSquareEmpty(1,coord[0],coord[1])){
+		    return;
+		}
+		if (BoardA[coord[0]][coord[1]].color==turn){
+		    //hMoves(BoardA[coord[0]][coord[1]]);
+		    oldCoord=coord;
+    		oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];	
+		    selected = true;
+		}else{
+		    selected = false;
+		}
     }else{
-	
-	//if works -> move piece, reset square, draw piece
-	//if works -> turn = the other one
-	//if doesnt work -> change selected
-	selected = false;
+		if (BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1])){
+			console.log("MOVED");
+			//reset old square color
+			resetSquare(oldSquare);
+			//draw piece
+			drawPiece(BoardA[coord[0]][coord[1]]);
+			//change turn
+			if (turn == WHITE){
+				turn = BLACK;
+			}else{
+				turn = WHITE;
+			}
+		}else{
+			console.log("NOT MOVING");
+			selected = false;
+		}
+		//if works -> move piece, reset square, draw piece
+		//if works -> turn = the other one
+		//if doesnt work -> change selected
+		selected = false;
     }
 
     console.log("Selected:"+selected);
@@ -419,7 +439,41 @@ function click1(e,d){
 
 
 function click2(e,d){
-    
+	var x = d['x'] - (d['x']%50);
+    var y = d['y'] - (d['y']%50);
+    var coord = [x/50,y/50];
+    //first check if selected then see if move or not
+    if (!selected2){
+		if (isSquareEmpty(2,coord[0],coord[1])){
+		    return;
+		}
+		if (BoardB[coord[0]][coord[1]].color==turn){
+		    //hMoves(BoardA[coord[0]][coord[1]]);
+		    oldCoord2=coord;
+    		oldSquare2 = xplace[coord[0]] + yplace[coord[1]];	
+		    selected2 = true;
+		}else{
+		    selected2 = false;
+		}
+    }else{
+		if (BoardB[oldCoord2[0]][oldCoord2[1]].move(coord[0],coord[1])){
+			console.log("MOVED");
+			//reset old square color
+			resetSquare(oldSquare2);
+			//draw piece
+			drawPiece(BoardB[coord[0]][coord[1]]);
+			//change turn
+			if (turn == WHITE){
+				turn = BLACK;
+			}else{
+				turn = WHITE;
+			}
+		}else{
+			console.log("NOT MOVING");
+			selected = false;
+		}
+	}	
+    /*
     if (oldx[1]%100==50){
         if (oldy[1]%100==50){
             ctx2.fillStyle = "#FF9999";
@@ -466,6 +520,7 @@ function click2(e,d){
     }else{
         move = false;
     }
+    */
 };
 
 var getMousePos = function(canvas, evt) {
