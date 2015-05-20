@@ -31,7 +31,6 @@ var colored = [ 'a1','a3','a5','a7',
                 'F2','F4','F6','F8',
                 'G1','G3','G5','G7',
                 'H2','H4','H6','H8']
-var loaded = [false,false,false,false,false,false,false,false,false,false,false,false];
 var wp = new Image(48,48);
 wp.src = "chesspieces/alpha/wP.png";
 var wn = new Image(48,48);
@@ -287,44 +286,44 @@ var drawPiece = function(piece){
 	switch (piece.type){
 	case PAWN:
 	    if (piece.color){
-		ctx1.drawImage(wp,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wp,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bp,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bp,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }
 	    break;
 	case ROOK:
 	    if (piece.color){
-		ctx1.drawImage(wr,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wr,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }else{
-		ctx1.drawImage(br,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(br,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }
 	    break;
 	case KNIGHT:
 	    if (piece.color){
-		ctx1.drawImage(wn,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wn,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bn,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bn,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }
 	    break;
 	case BISHOP:
 	    if (piece.color){
-		ctx1.drawImage(wb,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wb,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bb,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bb,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }
 	    break;
 	case QUEEN:
 	    if (piece.color){
-		ctx1.drawImage(wq,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wq,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bq,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bq,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }
 	    break;
 	case KING:
 	    if (piece.color){
-		ctx1.drawImage(wk,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(wk,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }else{
-		ctx1.drawImage(bk,piece.column*50+1,piece.row*50+1,48,48);
+		ctx1.drawImage(bk,(8-piece.column)*50-49,piece.row*50+1,48,48);
 	    }
 	    break;
 	}
@@ -366,41 +365,43 @@ var hMoves = function(piece){
 function click1(e,d){
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
-    var coord = [x/50,y/50];
+    var coord = [7-(x/50),y/50];
+    console.log(coord);
     
     if (!selected){
-		if (isSquareEmpty(1,coord[0],coord[1])){
-		    return;
-		}
-		if (BoardA[coord[0]][coord[1]].color==turn){
-		    //hMoves(BoardA[coord[0]][coord[1]]);
-		    oldCoord=coord;
-    		oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];	
-		    selected = true;
-		}else{
-		    selected = false;
-		}
+	if (isSquareEmpty(1,coord[0],coord[1])){
+	    return;
+	}
+	if (BoardA[coord[0]][coord[1]].color==turn){
+	    //hMoves(BoardA[coord[0]][coord[1]]);
+	    oldCoord=coord;
+    	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
+	    selected = true;
+	}else{
+	    selected = false;
+	}
     }else{
-		if (BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1])){
-			console.log("MOVED");
-			//reset old square color
-			resetSquare(oldSquare);
-			//draw piece
-			drawPiece(BoardA[coord[0]][coord[1]]);
-			//change turn
-			if (turn == WHITE){
-				turn = BLACK;
-			}else{
-				turn = WHITE;
-			}
-		}else{
-			console.log("NOT MOVING");
-			selected = false;
-		}
-		//if works -> move piece, reset square, draw piece
-		//if works -> turn = the other one
-		//if doesnt work -> change selected
-		selected = false;
+	if (BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1])){
+	    console.log("MOVED");
+	    //reset old square color
+	    resetSquare(oldSquare);
+	    resetSquare(xplace[7-coord[0]].toLowerCase() + yplace[coord[1]]);
+	    //draw piece
+	    drawPiece(BoardA[coord[0]][coord[1]]);
+	    //change turn
+	    if (turn == WHITE){
+		turn = BLACK;
+	    }else{
+		turn = WHITE;
+	    }
+	}else{
+	    console.log("NOT MOVING");
+	    selected = false;
+	}
+	//if works -> move piece, reset square, draw piece
+	//if works -> turn = the other one
+	//if doesnt work -> change selected
+	selected = false;
     }
 
     console.log("Selected:"+selected);
@@ -439,43 +440,44 @@ function click1(e,d){
 
 
 function click2(e,d){
-	var x = d['x'] - (d['x']%50);
+    var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
-    var coord = [x/50,y/50];
-    //first check if selected then see if move or not
+    var coord2 = [x/50,7-(y/50)];
+    
     if (!selected2){
-		if (isSquareEmpty(2,coord[0],coord[1])){
-		    return;
-		}
-		if (BoardB[coord[0]][coord[1]].color==turn){
-		    //hMoves(BoardA[coord[0]][coord[1]]);
-		    oldCoord2=coord;
-    		oldSquare2 = xplace[coord[0]] + yplace[coord[1]];	
-		    selected2 = true;
-		}else{
-		    selected2 = false;
-		}
+	console.log("not selected 2");
+	if (isSquareEmpty(2,coord2[0],coord2[1])){
+	    return;
+	}
+	if (BoardA[coord[0]][coord[1]].color==turn){
+	    //hMoves(BoardA[coord[0]][coord[1]]);
+	    oldCoord2 = coord2;
+	    oldSquare2 = xplace[7-coord2[0]] + yplace[coord2[1]];
+	    selected2 = true;
+	}else{
+	    selected2 = false;
+	}
     }else{
-		if (BoardB[oldCoord2[0]][oldCoord2[1]].move(coord[0],coord[1])){
-			console.log("MOVED");
-			//reset old square color
-			resetSquare(oldSquare2);
-			//draw piece
-			drawPiece(BoardB[coord[0]][coord[1]]);
-			//change turn
-			if (turn2 == WHITE){
-				turn2 = BLACK;
-			}else{
-				turn2 = WHITE;
-			}
-		}else{
-			console.log("NOT MOVING");
-			selected = false;
-		}
-	}	
+	console.log("selected 2");
+	if (BoardB[oldCoord2[0]][oldCoord2[1]].move(coord2[0],coord2[1])){
+	    console.log("MOVED 2");
+	    resetSquare(oldSquare2);
+	    resetSquare(xplace[7-coord2[0]] + yplace[coord2[1]]);
+	    drawPiece(BoardB[coord2[0]][coord2[1]]);
+	    if (turn2 == WHITE){
+		turn2 = BLACK;
+	    }else{
+		turn2 = WHITE;
+	    }
+	}else{
+	    console.log("NOT MOVING");
+	}
+	selected2 = false;
+    }
+    
     /*
-    if (oldx[1]%100==50){
-        if (oldy[1]%100==50){
+      if (oldx[1]%100==50){
+      if (oldy[1]%100==50){
             ctx2.fillStyle = "#FF9999";
             ctx2.fillRect(oldx+1,oldy+1,48,48);
         }else{
