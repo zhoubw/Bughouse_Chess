@@ -1,0 +1,16 @@
+var io = require('socket.io').listen(server);
+
+var games = {};
+
+
+io.sockets.on('connection', function(socket){
+    console.log("client has connected");
+
+    socket.on('join', function(data){
+    });
+
+    socket.on('new-move', function(data){
+    });
+
+    
+}
