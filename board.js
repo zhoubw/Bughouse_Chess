@@ -445,34 +445,36 @@ function click2(e,d){
     var coord2 = [x/50,7-(y/50)];
     
     if (!selected2){
-	console.log("not selected 2");
-	if (isSquareEmpty(2,coord2[0],coord2[1])){
-	    return;
-	}
-	if (BoardA[coord[0]][coord[1]].color==turn){
-	    //hMoves(BoardA[coord[0]][coord[1]]);
-	    oldCoord2 = coord2;
-	    oldSquare2 = xplace[7-coord2[0]] + yplace[coord2[1]];
-	    selected2 = true;
-	}else{
-	    selected2 = false;
-	}
+		console.log("not selected 2");
+		if (isSquareEmpty(2,coord2[0],coord2[1])){
+			console.log("empty")
+	    	return;
+		}
+		if (BoardB[coord2[0]][coord2[1]].color==turn2){
+		    //hMoves(BoardA[coord[0]][coord[1]]);
+		    oldCoord2 = coord2;
+		    oldSquare2 = xplace[7-coord2[0]] + yplace[coord2[1]];
+		    selected2 = true;
+		}else{
+		    selected2 = false;
+		}
     }else{
-	console.log("selected 2");
-	if (BoardB[oldCoord2[0]][oldCoord2[1]].move(coord2[0],coord2[1])){
-	    console.log("MOVED 2");
-	    resetSquare(oldSquare2);
-	    resetSquare(xplace[7-coord2[0]] + yplace[coord2[1]]);
-	    drawPiece(BoardB[coord2[0]][coord2[1]]);
-	    if (turn2 == WHITE){
-		turn2 = BLACK;
-	    }else{
-		turn2 = WHITE;
-	    }
-	}else{
-	    console.log("NOT MOVING");
-	}
-	selected2 = false;
+		console.log("selected 2");
+		if (BoardB[oldCoord2[0]][oldCoord2[1]].move(coord2[0],coord2[1])){
+		    console.log("MOVED 2");
+		    resetSquare(oldSquare2);
+		    resetSquare(xplace[7-coord2[0]] + yplace[coord2[1]]);
+		    drawPiece(BoardB[coord2[0]][coord2[1]]);
+		    if (turn2 == WHITE){
+				turn2 = BLACK;
+		    }else{
+				turn2 = WHITE;
+		    }
+		    selected2 = false;
+		}else{
+		    console.log("NOT MOVING");
+		}
+		selected2 = false;
     }
     
     /*
