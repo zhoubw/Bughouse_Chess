@@ -59,11 +59,15 @@ bk.src = "chesspieces/alpha/bK.png";
 
 var makeLines = function(ctx){ //makeLines and makeSquares is initial load of board
     for (var i=0;i<=400;i+=50){
+	ctx.beginPath();
+	ctx.lineWidth="1";
+	ctx.strokeStyle="#000000";
         ctx.moveTo(0,i);
         ctx.lineTo(400,i);
         ctx.stroke();
         ctx.moveTo(i,0);
         ctx.lineTo(i,400);
+	ctx.closePath();
         ctx.stroke();
     }
 };
@@ -204,11 +208,18 @@ var getCoords = function(coord){ //returns array of [xcoor,ycoor,board#]
 var hSquare  = function(coord){ //use to highlight certain squares
     var arr = getCoords(coord);
     if (arr[2]==1){
-	ctx1.fillStyle="#00FF00";
-	ctx1.fillRect(arr[0],arr[1],48,48);
+	ctx1.beginPath();
+	ctx1.strokeStyle="#00FF00";
+	ctx1.lineWidth="3";
+	ctx1.rect(arr[0],arr[1],48,48);
+	ctx1.closePath();
+	ctx1.stroke();
     }else{
-	ctx2.fillStyle="#00FF00";
-	ctx2.fillRect(arr[0],arr[1],48,48);
+	ctx2.beginPath();
+	ctx2.strokeStyle="#00FF00";
+	ctx2.rect(arr[0],arr[1],48,48);
+	ctx1.closePath();
+	ctx2.stroke();
     }
 }
 
@@ -345,20 +356,20 @@ var loadPieces = function(){
 }
 
 var hMoves = function(piece){
+    piece.getMoves();
+    console.log(piece.availableMoves);
+    //if empty don't do anything
     if (piece.availableMoves == []){
-	piece.getMoves();
-	if (piece.availableMoves == []){
-	    console.log("going to return");
-	    return;
-	}
+	return;
     }
+    //for everything in available moves
     for (var i = 0;i<piece.availableMoves.length;i++){
-    	if (piece.board==1){
-    	    hSquare(xplace[piece.availableMoves[i][0]].toLowerCase() + yplace[piece.availableMoves[i][1]]);
-    	}else{
-    	    hSquare(xplace[7-(x/50)]+yplace[7-(y/50)]);
-    	}
+	var coord = piece.availableMoves[i];
+	hSquare(xplace[7-coord[0]].toLowerCase() + yplace[coord[1]]);
     }
+    //use [0] as column [1] as row
+    //highlight square
+    //reset squares at end
 }
 
 
@@ -367,13 +378,12 @@ function click1(e,d){
     var y = d['y'] - (d['y']%50);
     var coord = [7-(x/50),y/50];
     console.log(coord);
-    
     if (!selected){
 	if (isSquareEmpty(1,coord[0],coord[1])){
 	    return;
 	}
 	if (BoardA[coord[0]][coord[1]].color==turn){
-	    //hMoves(BoardA[coord[0]][coord[1]]);
+	    hMoves(BoardA[coord[0]][coord[1]]);
 	    oldCoord=coord;
     	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
 	    selected = true;
@@ -381,22 +391,58 @@ function click1(e,d){
 	    selected = false;
 	}
     }else{
-	if (BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1])){
-	    console.log("MOVED");
-	    //reset old square color
-	    resetSquare(oldSquare);
-	    resetSquare(xplace[7-coord[0]].toLowerCase() + yplace[coord[1]]);
-	    //draw piece
-	    drawPiece(BoardA[coord[0]][coord[1]]);
-	    //change turn
-	    if (turn == WHITE){
-		turn = BLACK;
-	    }else{
-		turn = WHITE;
+	if (BoardA[coord[0]][coord[1]] != 0){ //if capturing
+	    if (BoardA[coord[0]][coord[1]].color==turn){
+		//reset the graphics
+		ctx1.clearRect(0,0,400,400);
+		makeLines(ctx1);
+		makeSquares(ctx1);
+		loadPieces();
+		hMoves(BoardA[coord[0]][coord[1]]);
+		oldCoord=coord;
+    		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];
+		return;
 	    }
-	}else{
-	    console.log("NOT MOVING");
+	    if (BoardA[coord[0]][coord[1]].type == KING){
+		ctx1.clearRect(0,0,400,400);
+		alert("KING TAKEN");
+	    }else{
+		BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1]);
+		console.log("taking piece:" + BoardA[coord[0]][coord[1]].type);
+		//reset the graphics
+		ctx1.clearRect(0,0,400,400);
+		makeLines(ctx1);
+		makeSquares(ctx1);
+		loadPieces();
+		
+		//change turn
+		if (turn == WHITE){
+		    turn = BLACK;
+		}else{
+		    turn = WHITE;
+		}
+	    }
 	    selected = false;
+	    return;
+	}else{
+	    if (BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1])){
+		console.log("MOVED");
+		//reset the graphics
+		ctx1.clearRect(0,0,400,400);
+		makeLines(ctx1);
+		makeSquares(ctx1);
+		loadPieces();
+		
+		//change turn
+		if (turn == WHITE){
+		    turn = BLACK;
+		}else{
+		    turn = WHITE;
+		}
+	    }else{
+		console.log("NOT MOVING");
+		selected = false;
+	    }
 	}
 	//if works -> move piece, reset square, draw piece
 	//if works -> turn = the other one
