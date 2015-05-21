@@ -20,6 +20,7 @@ var BLACK_A = 1;
 var WHITE_B = 2;
 var BLACK_B = 3;
 
+
 //these boards are sideways; access is [column][row]
 //we're using numbers for boards because of some old implementation
 //this is board 1
@@ -105,7 +106,7 @@ function Piece (player, color, type, board, column, row) {
     };
     //returns true if move is successful
     this.move = function(column, row) {
-	this.getMoves();
+	//this.getMoves();
 	//move and capture should be separated
 	//drop should be called in here
 	var b = BoardA;
@@ -193,7 +194,7 @@ function Piece (player, color, type, board, column, row) {
 	}
 	//search for rook or queen, concurrent on file
 	else {
-	    var p = getPiece(this.board,search_x,search_y).type;
+ 	    var p = getPiece(this.board,search_x,search_y).type;
 	    if (p == ROOK || p == QUEEN) {
 		return true;
 	    }
@@ -237,7 +238,7 @@ function Piece (player, color, type, board, column, row) {
 		if (!isSquareEmpty(this.board, this.column - 1, this.row)) {
 		    var target = getPiece(this.board, this.column - 1, this.row);
 		    if (target.type == PAWN && target.color != this.color) {
-			if (target.moved == 1 && jumped) {
+			if (target.moved == 1 && target.jumped) {
 			    this.availableMoves.push([this.column - 1, this.row + (1*this.direction), EN_PASSANT]);
 			}
 		    }
@@ -255,7 +256,7 @@ function Piece (player, color, type, board, column, row) {
 		if (!isSquareEmpty(this.board, this.column + 1, this.row)) {
 		    var target = getPiece(this.board, this.column + 1, this.row);
 		    if (target.type == PAWN && target.color != this.color) {
-			if (target.moved == 1 && jumped) {
+			if (target.moved == 1 && target.jumped) {
 			    this.availableMoves.push([this.column + 1, this.row + (1*this.direction), EN_PASSANT]);
 			}
 		    }
@@ -338,6 +339,9 @@ function Piece (player, color, type, board, column, row) {
 	    this.checkKingSquare(this.column-1, this.row-1);
 	    this.checkKingSquare(this.column-1, this.row);
 	    this.checkKingSquare(this.column-1, this.row+1);
+	    console.log("available moves:");
+	    console.log(this.availableMoves);
+
 	    var threats = this.squareThreats(this.column, this.row);
 	    if (threats.length == 0) {
 		return false;
@@ -368,8 +372,6 @@ function Piece (player, color, type, board, column, row) {
 		    }
 		}
 	    }
-	    console.log("king is checking squares");
-	    //if the king can move. getMoves() functionality will probably be in here
 	    if (this.availableMoves.length == 0) {
 		return true;
 	    }
