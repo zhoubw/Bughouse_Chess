@@ -113,6 +113,16 @@ function Piece (player, color, type, board, column, row) {
 	if (this.board == 2) {
 	    b = BoardB;
 	}
+	for (var x = 0; x < 8; x ++) {
+	    for (var y = 0; y < 8; y++) {
+		var target = b[x][y];
+		if (target.color == this.color) {
+		    if (target.type == PAWN) {
+			target.jumped = false;
+		    }
+		}
+	    }
+	}
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
@@ -136,6 +146,10 @@ function Piece (player, color, type, board, column, row) {
 		b[oldColumn][oldRow] = 0;
 		if (square[2] == JUMP) {
 		    this.jumped = true;
+		}
+		if (this.type == PAWN) {
+		    
+		    this.moved += 1;
 		}
 		return true;
 	    }
@@ -205,7 +219,8 @@ function Piece (player, color, type, board, column, row) {
     switch(type) {
     case PAWN:
 	//PROMOTION NOT FINISHED!!
-	this.moved = 0; //first move
+	//en passant needs to be fixed
+	this.moved = 0;
 	this.jumped = false;
 	this.direction = 1;
 	if (this.color == BLACK) {
@@ -214,6 +229,8 @@ function Piece (player, color, type, board, column, row) {
 	
 	this.getMoves = function(){
 	    //possible moves will be an array of [column, row, move 0/capture 1/en passant 2/jump 3]
+	    //make all of your OWN pawns jumped = false
+	    
 	    this.availableMoves.length = 0; //clear array of moves
 	    //first move
 	    if (this.moved == 0) {
@@ -262,8 +279,6 @@ function Piece (player, color, type, board, column, row) {
 		    }
 		}
 	    }
-
-	    this.moved += 1; //maybe relocate this somewhere
 	};
 	break;
     case KING:
