@@ -123,10 +123,10 @@ function Piece (player, color, type, board, column, row) {
 		    b[square[0]][square[1]] = 0;
 		}
 		if (square[2] == EN_PASSANT) {
-		    b[square[0]][square[1]-1].column = -1;
-		    b[square[0]][square[1]-1].row = -1;
-		    this.player.partner.spare.push(b[square[0]][square[1]-1]);
-		    b[square[0]][square[1]-1] = 0;
+		    b[square[0]][square[1]-this.direction].column = -1;
+		    b[square[0]][square[1]-this.direction].row = -1;
+		    this.player.partner.spare.push(b[square[0]][square[1]-this.direction]);
+		    b[square[0]][square[1]-this.direction] = 0;
 		}
 		var oldColumn = this.column;
 		var oldRow = this.row;
