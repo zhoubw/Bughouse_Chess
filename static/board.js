@@ -412,8 +412,9 @@ function click1(e,d,socket){
 	//if works -> turn = the other one
 	//if doesnt work -> change selected
 	var returned = BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1]);
-	if (returned==false){
-	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){ //if same color as the turn rehighlight
+	if (returned==false){//illegal move
+	    console.log("returned = false");
+	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
 		hMoves(BoardA[coord[0]][coord[1]]);
 		oldCoord=coord;
     		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
