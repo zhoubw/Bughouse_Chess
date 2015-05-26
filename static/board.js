@@ -394,7 +394,6 @@ function click1(e,d,socket){
     //sends signal
     socket.emit('click1', {data: coord});
 
-    console.log(coord);
     if (!selected){
 	if (isSquareEmpty(1,coord[0],coord[1])){
 	    return;
@@ -431,6 +430,7 @@ function click1(e,d,socket){
 	    }else{
 		turn = WHITE;
 	    }
+	    selected = false;
 	    return;
 	}
 	//if it gets up to here it's a capture
@@ -438,6 +438,12 @@ function click1(e,d,socket){
 	console.log(returned);
 	console.log("");
 	console.log("");
+	selected = false;
+	if (turn==WHITE){
+	    turn = BLACK;
+	}else{
+	    turn = WHITE;
+	}
     }
     //ctx1.strokeStyle = "#0000FF";    
     //ctx1.strokeRect(x+2,y+2,46,46);
