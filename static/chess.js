@@ -113,6 +113,7 @@ function Piece (player, color, type, board, column, row) {
 	if (this.board == 2) {
 	    b = BoardB;
 	}
+	//just resetting pawn jumps
 	for (var x = 0; x < 8; x ++) {
 	    for (var y = 0; y < 8; y++) {
 		var target = b[x][y];
@@ -123,6 +124,10 @@ function Piece (player, color, type, board, column, row) {
 		}
 	    }
 	}
+	
+	//whatever is on the target square
+	var target = b[column][row];
+	
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
@@ -151,7 +156,7 @@ function Piece (player, color, type, board, column, row) {
 		    
 		    this.moved += 1;
 		}
-		return true;
+		return target;
 	    }
 	}
 	return false;
