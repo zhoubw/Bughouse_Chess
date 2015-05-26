@@ -15,7 +15,7 @@ socketio = SocketIO(app)
 @app.route("/")
 def index():
     return render_template('index.html')
-
+'''
 @socketio.on('my event', namespace='/test')
 def test_message(message):
     emit('my response', {'data': message['data']})
@@ -31,10 +31,12 @@ def test_connect():
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
     print('Client disconnected')
+'''
 
 @socketio.on('click1', namespace='')
 def test_click1(message):
     print message
+    
 if __name__ == '__main__':
     #socketio.run(app)
     socketio.run(app,host="0.0.0.0",port=5000)
