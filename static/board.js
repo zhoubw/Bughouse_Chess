@@ -373,6 +373,19 @@ var hMoves = function(piece){
 }
 
 
+
+
+var updateBoard = function(){
+    ctx1.clearRect(0,0,400,400);
+    makeLines(ctx1);
+    makeSquares(ctx1);
+    ctx2.clearRect(0,0,400,400);
+    makeLines(ctx2);
+    makeSquares(ctx2);
+    loadPieces();
+};
+
+
 function click1(e,d,socket){
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
@@ -387,75 +400,45 @@ function click1(e,d,socket){
 	    return;
 	}
 	if (BoardA[coord[0]][coord[1]].color==turn){
+	    updateBoard();
 	    hMoves(BoardA[coord[0]][coord[1]]);
 	    oldCoord=coord;
     	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
-	    selected = true;
+	    selected = true;	    
 	}else{
 	    selected = false;
 	}
     }else{
-	if (BoardA[coord[0]][coord[1]] != 0){ //if capturing
-	    if (BoardA[coord[0]][coord[1]].color==turn){
-		//reset the graphics
-		ctx1.clearRect(0,0,400,400);
-		makeLines(ctx1);
-		makeSquares(ctx1);
-		loadPieces();
-		hMoves(BoardA[coord[0]][coord[1]]);
-		oldCoord=coord;
-    		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];
-		return;
-	    }
-	    if (BoardA[coord[0]][coord[1]].type == KING){
-		ctx1.clearRect(0,0,400,400);
-		alert("KING TAKEN");
-	    }else{
-		BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1]);
-		console.log("taking piece:" + BoardA[coord[0]][coord[1]].type);
-		//reset the graphics
-		ctx1.clearRect(0,0,400,400);
-		makeLines(ctx1);
-		makeSquares(ctx1);
-		loadPieces();
-		
-		//change turn
-		if (turn == WHITE){
-		    turn = BLACK;
-		}else{
-		    turn = WHITE;
-		}
-	    }
-	    selected = false;
-	    return;
-	}else{
-	    if (BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1])){
-		console.log("MOVED");
-		//reset the graphics
-		ctx1.clearRect(0,0,400,400);
-		makeLines(ctx1);
-		makeSquares(ctx1);
-		loadPieces();
-		
-		//change turn
-		if (turn == WHITE){
-		    turn = BLACK;
-		}else{
-		    turn = WHITE;
-		}
-	    }else{
-		console.log("NOT MOVING");
-		selected = false;
-	    }
-	}
 	//if works -> move piece, reset square, draw piece
 	//if works -> turn = the other one
 	//if doesnt work -> change selected
-	selected = false;
+	var returned = BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1]);
+	if (returned==false){
+	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){ //if same color as the turn rehighlight
+		hMoves(BoardA[coord[0]][coord[1]]);
+		oldCoord=coord;
+    		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
+		selected = true;
+	    }else{
+		selected = false;
+	    }
+	    return;//to break out of function when not moving
+	}
+	updateBoard();
+	if (returned==0){ //if it just moved to an empty square change turn
+	    if (turn == WHITE){
+		turn = BLACK;
+	    }else{
+		turn = WHITE;
+	    }
+	    return;
+	}
+	//if it gets up to here it's a capture
+	console.log("CAPTURED:");
+	console.log(returned);
+	console.log("");
+	console.log("");
     }
-
-    console.log("Selected:"+selected);
-    console.log(turn);
     //ctx1.strokeStyle = "#0000FF";    
     //ctx1.strokeRect(x+2,y+2,46,46);
 
