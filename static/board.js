@@ -412,11 +412,8 @@ function click1(e,d,socket){
 	//if works -> turn = the other one
 	//if doesnt work -> change selected
 	var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
-	console.log ("old piece:");
-	console.log (old_piece);
 	var returned = old_piece.move(coord[0],coord[1]);
 	if (returned==false){//illegal move
-	    console.log("returned = false");
 	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
 		hMoves(BoardA[coord[0]][coord[1]]);
 		oldCoord=coord;
@@ -428,7 +425,7 @@ function click1(e,d,socket){
 	    return;//to break out of function when not moving
 	}
 	updateBoard();
-	if (returned==0){ //if it just moved to an empty square change turn
+	if (returned==-1){ //if it just moved to an empty square change turn
 	    if (turn == WHITE){
 		turn = BLACK;
 	    }else{

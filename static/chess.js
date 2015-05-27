@@ -127,6 +127,9 @@ function Piece (player, color, type, board, column, row) {
 	
 	//whatever is on the target square
 	var target = b[column][row];
+	if (target == 0)  {
+	    target = -1;
+	}
 	
 	for (var i=0; i<this.availableMoves.length; i++) {
 	    var square = this.availableMoves[i];
