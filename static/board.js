@@ -411,7 +411,9 @@ function click1(e,d,socket){
 	//if works -> move piece, reset square, draw piece
 	//if works -> turn = the other one
 	//if doesnt work -> change selected
-	var returned = BoardA[oldCoord[0]][oldCoord[1]].move(coord[0],coord[1]);
+	var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
+	console.log ("old piece: "+old_piece);
+	var returned = old_piece.move(coord[0],coord[1]);
 	if (returned==false){//illegal move
 	    console.log("returned = false");
 	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
