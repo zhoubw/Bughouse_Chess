@@ -412,7 +412,8 @@ function click1(e,d,socket){
 	//if works -> turn = the other one
 	//if doesnt work -> change selected
 	var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
-	console.log ("old piece: "+old_piece);
+	console.log ("old piece:");
+	console.log (old_piece);
 	var returned = old_piece.move(coord[0],coord[1]);
 	if (returned==false){//illegal move
 	    console.log("returned = false");
