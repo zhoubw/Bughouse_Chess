@@ -11,6 +11,8 @@ var lastPiece;
 var turn = WHITE;
 var turn2 = WHITE;
 var move = false;
+var drop = false;
+var drop2 = false;
 var selected = false;
 var selected2 = false;
 var oldCoord = [0,0];
@@ -394,6 +396,12 @@ function click1(e,d,socket){
     //sends signal
     socket.emit('click1', {data: coord});
 
+    if (drop){
+	console.log("DROPPING PIECE WOO");
+	drop = false;
+	return;
+    }
+    
     if (!selected){
 	if (isSquareEmpty(1,coord[0],coord[1])){
 	    return;
@@ -415,9 +423,10 @@ function click1(e,d,socket){
 	console.log ("old piece:");
 	console.log (old_piece);
 	var returned = old_piece.move(coord[0],coord[1]);
-	if (returned==false){//illegal move
+	if (returned == false){//illegal move
 	    console.log("returned = false");
 	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
+		updateBoard();
 		hMoves(BoardA[coord[0]][coord[1]]);
 		oldCoord=coord;
     		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
@@ -428,7 +437,7 @@ function click1(e,d,socket){
 	    return;//to break out of function when not moving
 	}
 	updateBoard();
-	if (returned==0){ //if it just moved to an empty square change turn
+	if (returned==-1){ //if it just moved to an empty square change turn
 	    if (turn == WHITE){
 		turn = BLACK;
 	    }else{
@@ -449,35 +458,6 @@ function click1(e,d,socket){
 	    turn = WHITE;
 	}
     }
-    //ctx1.strokeStyle = "#0000FF";    
-    //ctx1.strokeRect(x+2,y+2,46,46);
-
-    
-    /*
-    if (move){
-	if (BoardA[oldCoord[0]][oldCoord[1]].move(x/50,y/50)){
-	    
-	    resetSquare(oldSquare);
-	    drawPiece(BoardA[oldCoord[0]][oldCoord[1]]);
-	    drawPiece(BoardA[x/50][y/50]);
-	    printBoard(1);
-	}
-	move = false;
-    }
-    
-    oldSquare = xplace[x/50].toLowerCase() + yplace[y/50];
-    oldCoord = [x/50,y/50];
-    hMoves(BoardA[x/50][y/50]);
-    console.log(move);
-
-    if (BoardA[x/50][y/50] != 0){
-	move = true;
-	console.log(BoardA[x/50][y/50].availableMoves);
-    }else{
-        move = false;
-    }
-    console.log(BoardA);
-    */
 }
 
 
@@ -570,6 +550,13 @@ function click2(e,d){
     */
 };
 
+var handClick = function(id){
+    $(id).on('click',function(e){
+	drop = true;
+	console.log("DROP IS TRUE");
+    }
+}
+
 var getMousePos = function(canvas, evt) {
     var rect = canvas.getBoundingClientRect();
     return {
@@ -582,20 +569,7 @@ $("#load").on('click',function(e){
     console.log('load');
     loadPieces();
 });
-/*
-board1.addEventListener('mousedown', function(evt){
-    var mousePos = getMousePos(board1,evt);
-    click1(evt,mousePos);
-    console.log(mousePos);
-    
-}, false);
 
-board2.addEventListener('mousedown', function(evt){
-    var mousePos = getMousePos(board2,evt);
-    click2(evt,mousePos);
-    console.log(mousePos);
-}, false);
-*/
 window.onload = function(){
     
     //var socket = io.connect("http://localhost");
@@ -643,5 +617,8 @@ window.onload = function(){
     Init();
     loadPieces();
 
-
+    handClick("#hand1");
+    handClick("#hand2");
+    handClick("#hand3");
+    handClick("#hand4");
 };
