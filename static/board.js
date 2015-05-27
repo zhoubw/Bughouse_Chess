@@ -13,6 +13,8 @@ var turn2 = WHITE;
 var move = false;
 var drop = false;
 var drop2 = false;
+var dropPiece;
+var dropPiece2;
 var selected = false;
 var selected2 = false;
 var oldCoord = [0,0];
@@ -398,7 +400,18 @@ function click1(e,d,socket){
 
     if (drop){
 	console.log("DROPPING PIECE WOO");
+	if (turn == WHITE){
+	    BoardA[coord[0]][coord[1]] = new Piece(white_A,white_A.color,dropPiece,1,coord[0],coord[1]);
+	}else{
+	    BoardA[coord[0]][coord[1]] = new Piece(black_A,black_A.color,dropPiece,1,coord[0],coord[1]);
+	}
+	updateBoard();
 	drop = false;
+	if (turn == WHITE){
+	    turn = BLACK;
+	}else{
+	    turn = WHITE;
+	}
 	return;
     }
     
@@ -550,6 +563,7 @@ function click2(e,d){
 var handClick = function(id){
     $(id).on('click',function(e){
 	drop = true;
+	dropPiece = PAWN;
 	console.log("DROP IS TRUE");
     });
 }
@@ -571,6 +585,7 @@ window.onload = function(){
     
     //var socket = io.connect("http://localhost");
     //namespace = "/test";
+
     namespace = "";
     var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
@@ -589,7 +604,6 @@ window.onload = function(){
         socket.emit('my broadcast event', {data: $('#broadcast_data').val()});
         return false;
     });
-
 
     board1.addEventListener('mousedown', function(evt){
 	var mousePos = getMousePos(board1,evt);
