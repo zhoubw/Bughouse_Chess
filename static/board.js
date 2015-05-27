@@ -551,7 +551,7 @@ var handClick = function(id){
     $(id).on('click',function(e){
 	drop = true;
 	console.log("DROP IS TRUE");
-    }
+    });
 }
 
 var getMousePos = function(canvas, evt) {

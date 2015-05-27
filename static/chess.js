@@ -340,6 +340,7 @@ function Piece (player, color, type, board, column, row) {
 		    }
 		}
 	    }
+	    console.log(c + ", " + r + " " + threats);
 	    return threats;
 	};
 	//returns if the square is safe
