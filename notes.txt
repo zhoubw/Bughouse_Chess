@@ -7,3 +7,4 @@ Notes
  - Make a copy of the board. Screw memory usage.
  - Execute all possible moves and check for king check
  - If there are no safe moves, it is checkmate.
+ - ONLY contact and knight check are mate
