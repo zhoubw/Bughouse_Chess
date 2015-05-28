@@ -293,6 +293,7 @@ function Piece (player, color, type, board, column, row) {
 	//YOU CAN STILL HANG THE KING - UNFINISHED
 	//If the king is in check, other pieces' moves will not be locked
 	this.player.king = this;
+	/*
 	//almost identical to checkKnightSquare
 	this.checkKingSquare = function(c,r) {
 	    if (squareExists(c,r)) {
@@ -329,6 +330,7 @@ function Piece (player, color, type, board, column, row) {
 		    if (target != 0) {
 			if (target.color != this.color) {
 			    //check all the moves of this piece to see if it attacks the square
+			    target.getMoves();
 			    for (var i = 0; i<target.availableMoves.length; i++) {
 				if (target.availableMoves[i][0] == c) {
 				    if (target.availableMoves[i][1] == r) {
@@ -397,19 +399,23 @@ function Piece (player, color, type, board, column, row) {
 		}
 	    }
 	    if (this.availableMoves.length == 0) {
+		console.log("CHECKMATE");
 		return true;
 	    }
 	    return false;
 	};
 	//this will be called at the end of an opponent's turn
+	*/
 	this.getMoves = function() {
 	    //checkmate will probably be called here with the checkKingSquare
 	    
 	    this.availableMoves.length = 0; //clear array of moves
+	    /*
 	    if (this.checkmate()) { //checkKingSquare will be called in here
 		this.availableMoves.length = 0;
 		return false; //return the game flag
 	    }
+	    */
 	};
 	break;
     case QUEEN:

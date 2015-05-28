@@ -1,23 +1,9 @@
 Notes
 
-- IMPORTANT: the sprites for the pieces are NOT tied to the objects yet. They need to be.
-- Need to get server set up soon
-- A turn will go as follows:
- - Before the game, generate the moves for white.
- - Player moves.
- - If the king is captured, end the game and return a flag.
- - Next player's moves are generated BEFORE the next turn starts. This allows to check for checkmate.
- - If the king is checkmated, end the game and return a flag.
- - Turn end. Next player's turn.
-
-- At any time, if a player's clock hits 0, end the game and return a flag.
-- Maybe find a way to process moves locally?
-
-- Pawn promotion
-- Drops and interaction
-
-
-Server Notes
-- Example of using server.io
-  	 https://github.com/benas/gamehub.io/blob/master/config/socket.js
-	 https://github.com/benas/gamehub.io/blob/master/initData.js
+- Checkmate
+ - At the start of turn, ALL pieces will call getMoves()
+ - All these moves will be pushed to a master list
+ - A move array will have its owner in it
+ - Make a copy of the board. Screw memory usage.
+ - Execute all possible moves and check for king check
+ - If there are no safe moves, it is checkmate.
