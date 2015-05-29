@@ -1,0 +1,14 @@
+import pymongo
+from pymongo import MongoClient
+
+client = MongoClient()
+db = client.account_manager
+users = db.users
+
+
+
+def user_exists(username):
+    return users.find({"username" : username}).count() > 0;
+
+def insert(username, password):
+    
