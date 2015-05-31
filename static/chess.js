@@ -293,7 +293,7 @@ function Piece (player, color, type, board, column, row) {
 	//YOU CAN STILL HANG THE KING - UNFINISHED
 	//If the king is in check, other pieces' moves will not be locked
 	this.player.king = this;
-	/*
+
 	//almost identical to checkKnightSquare
 	this.checkKingSquare = function(c,r) {
 	    if (squareExists(c,r)) {
@@ -330,14 +330,24 @@ function Piece (player, color, type, board, column, row) {
 		    if (target != 0) {
 			if (target.color != this.color) {
 			    //check all the moves of this piece to see if it attacks the square
-			    target.getMoves();
-			    for (var i = 0; i<target.availableMoves.length; i++) {
-				if (target.availableMoves[i][0] == c) {
-				    if (target.availableMoves[i][1] == r) {
-					threats.push(target);
-				    }
+			    if (target.type == KING) {
+				var distance_squared = Math.pow((target.column - c), 2) + Math.pow((target.row - r), 2);
+				if (distance_squared <= 2) { //not contact check
+				    threats.push(target);
 				}
- 			    }
+			    }
+			    else {
+				target.getMoves();
+				 for (var i = 0; i<target.availableMoves.length; i++) {
+				     if (target.availableMoves[i][0] == c) {
+					 if (target.availableMoves[i][1] == r) {
+					     threats.push(target);
+					 }
+				     }
+ 				 }
+			    }
+			   
+			    
 			}
 		    }
 		}
@@ -352,6 +362,7 @@ function Piece (player, color, type, board, column, row) {
 	//if the king is in check and all squares around him are unsafe/occupied AND the enemy king is not in check,
 	//AND any piece that would save the king is pinned,
 	//checkmate = true
+	/*
 	this.checkmate = function() {
 	    //unfinished
 	    //not calling isSquareSafe because that would involve another 2D array search
@@ -406,10 +417,60 @@ function Piece (player, color, type, board, column, row) {
 	};
 	//this will be called at the end of an opponent's turn
 	*/
+
+	//NEW KING MECHANICS **************************************************************************************
+	this.checkmate = function() {
+	    //only checkmate if knight check, contact check, or double check
+	    var threats = this.squareThreats(this.column, this.row);
+	    if (threats.length == 0) {
+		return false;
+	    }
+	    else if (threats.length == 1) {
+		//must be contact or knight check
+		if (threats[0].type != KNIGHT) { //not knight check
+		    var distance_squared = Math.pow((threats[0].column - this.column), 2) + Math.pow((threats[0].row - this.row), 2);
+		    if (distance_squared > 2) { //not contact check
+			return false;
+		    }
+		}
+		//if the attacking piece can be captured by a non-pinned piece, checkmate is false
+		var defenders = this.squareThreats(threats[0].column, threats[0].row);
+		for (var i = 0; i < defenders.length; i ++) {
+		    if (!defenders[i].pinned) {
+			return false;
+		    }
+		}
+	    }
+	    //check for safe squares the king can move to
+	    
+	    this.checkKingSquare(this.column, this.row+1);
+	    this.checkKingSquare(this.column+1, this.row+1);
+	    this.checkKingSquare(this.column+1, this.row);
+	    this.checkKingSquare(this.column+1, this.row-1);
+	    this.checkKingSquare(this.column, this.row-1);
+	    this.checkKingSquare(this.column-1, this.row-1);
+	    this.checkKingSquare(this.column-1, this.row);
+	    this.checkKingSquare(this.column-1, this.row+1);
+	    if (this.availableMoves > 0) {
+		return false;
+	    }
+	    console.log("checkmate");
+	    return true;
+	};
+	
 	this.getMoves = function() {
 	    //checkmate will probably be called here with the checkKingSquare
 	    
 	    this.availableMoves.length = 0; //clear array of moves
+	    this.checkmate();
+	    this.checkKingSquare(this.column, this.row+1);
+	    this.checkKingSquare(this.column+1, this.row+1);
+	    this.checkKingSquare(this.column+1, this.row);
+	    this.checkKingSquare(this.column+1, this.row-1);
+	    this.checkKingSquare(this.column, this.row-1);
+	    this.checkKingSquare(this.column-1, this.row-1);
+	    this.checkKingSquare(this.column-1, this.row);
+	    this.checkKingSquare(this.column-1, this.row+1);
 	    /*
 	    if (this.checkmate()) { //checkKingSquare will be called in here
 		this.availableMoves.length = 0;
