@@ -14,7 +14,9 @@ var move = false;
 var drop = false;
 var drop2 = false;
 var dropPiece;
+var dropColor;
 var dropPiece2;
+var dropColor2;
 var selected = false;
 var selected2 = false;
 var oldCoord = [0,0];
@@ -212,18 +214,18 @@ var getCoords = function(coord){ //returns array of [xcoor,ycoor,board#]
 var hSquare  = function(coord){ //use to highlight certain squares
     var arr = getCoords(coord);
     if (arr[2]==1){
-	ctx1.beginPath();
-	ctx1.strokeStyle="#00FF00";
-	ctx1.lineWidth="3";
-	ctx1.rect(arr[0],arr[1],48,48);
-	ctx1.closePath();
-	ctx1.stroke();
+		ctx1.beginPath();
+		ctx1.strokeStyle="#00FF00";
+		ctx1.lineWidth="3";
+		ctx1.rect(arr[0],arr[1],48,48);
+		ctx1.closePath();
+		ctx1.stroke();
     }else{
-	ctx2.beginPath();
-	ctx2.strokeStyle="#00FF00";
-	ctx2.rect(arr[0],arr[1],48,48);
-	ctx1.closePath();
-	ctx2.stroke();
+		ctx2.beginPath();
+		ctx2.strokeStyle="#00FF00";
+		ctx2.rect(arr[0],arr[1],48,48);
+		ctx1.closePath();
+		ctx2.stroke();
     }
 }
 
@@ -399,74 +401,74 @@ function click1(e,d,socket){
     socket.emit('click1', {data: coord});
 
     if (drop){
-	console.log("DROPPING PIECE WOO");
-	if (turn == WHITE){
-	    BoardA[coord[0]][coord[1]] = new Piece(white_A,white_A.color,dropPiece,1,coord[0],coord[1]);
-	}else{
-	    BoardA[coord[0]][coord[1]] = new Piece(black_A,black_A.color,dropPiece,1,coord[0],coord[1]);
-	}
-	updateBoard();
-	drop = false;
-	if (turn == WHITE){
-	    turn = BLACK;
-	}else{
-	    turn = WHITE;
-	}
-	return;
+		console.log("DROPPING PIECE WOO");
+		if (turn == WHITE){
+		    BoardA[coord[0]][coord[1]] = new Piece(white_A,white_A.color,dropPiece,1,coord[0],coord[1]);
+		}else{
+		    BoardA[coord[0]][coord[1]] = new Piece(black_A,black_A.color,dropPiece,1,coord[0],coord[1]);
+		}
+		updateBoard();
+		drop = false;
+		if (turn == WHITE){
+		    turn = BLACK;
+		}else{
+		    turn = WHITE;
+		}
+		return;
     }
     
     if (!selected){
-	if (isSquareEmpty(1,coord[0],coord[1])){
-	    return;
-	}
-	if (BoardA[coord[0]][coord[1]].color==turn){
-	    updateBoard();
-	    hMoves(BoardA[coord[0]][coord[1]]);
-	    oldCoord=coord;
-    	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
-	    selected = true;	    
-	}else{
-	    selected = false;
-	}
+		if (isSquareEmpty(1,coord[0],coord[1])){
+		    return;
+		}
+		if (BoardA[coord[0]][coord[1]].color==turn){
+		    updateBoard();
+		    hMoves(BoardA[coord[0]][coord[1]]);
+		    oldCoord=coord;
+	    	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
+		    selected = true;	    
+		}else{
+		    selected = false;
+		}
     }else{
-	//if works -> move piece, reset square, draw piece
-	//if works -> turn = the other one
-	//if doesnt work -> change selected
-	var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
-	var returned = old_piece.move(coord[0],coord[1]);
-	if (returned == false){//illegal move
-	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
+		//if works -> move piece, reset square, draw piece
+		//if works -> turn = the other one
+		//if doesnt work -> change selected
+		var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
+		var returned = old_piece.move(coord[0],coord[1]);
+		if (returned == false){//illegal move
+		    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
+				updateBoard();
+				hMoves(BoardA[coord[0]][coord[1]]);
+				oldCoord=coord;	
+		    	oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
+				selected = true;
+		    }else{
+				selected = false;
+		    }
+		    return;//to break out of function when not moving
+		}
 		updateBoard();
-		hMoves(BoardA[coord[0]][coord[1]]);
-		oldCoord=coord;
-    		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
-		selected = true;
-	    }else{
+		if (returned==-1){ //if it just moved to an empty square change turn
+		    if (turn == WHITE){
+				turn = BLACK;
+		    }else{
+				turn = WHITE;
+		    }
+		    selected = false;
+		    return;
+		}
+		//if it gets up to here it's a capture
+		console.log("CAPTURED:");
+		console.log(returned);
+		console.log("");
+		console.log("");
 		selected = false;
-	    }
-	    return;//to break out of function when not moving
-	}
-	updateBoard();
-	if (returned==-1){ //if it just moved to an empty square change turn
-	    if (turn == WHITE){
-		turn = BLACK;
-	    }else{
-		turn = WHITE;
-	    }
-	    selected = false;
-	    return;
-	}
-	//if it gets up to here it's a capture
-	console.log("CAPTURED:");
-	console.log(returned);
-	console.log("");
-	console.log("");
-	selected = false;
-	if (turn==WHITE){
-	    turn = BLACK;
-	}else{
-	    turn = WHITE;
-	}
+		if (turn==WHITE){
+		    turn = BLACK;
+		}else{
+		    turn = WHITE;
+		}
     }
 }
 
@@ -477,6 +479,11 @@ function click2(e,d){
     var y = d['y'] - (d['y']%50);
     var coord2 = [x/50,7-(y/50)];
     
+    if (drop2){
+
+    	console.log("DROPPING ON SECOND BOARD");
+    }
+
     if (!selected2){
 		console.log("not selected 2");
 		if (isSquareEmpty(2,coord2[0],coord2[1])){
@@ -508,64 +515,109 @@ function click2(e,d){
 		    console.log("NOT MOVING");
 		}
 		selected2 = false;
-    }
-    
-    /*
-      if (oldx[1]%100==50){
-      if (oldy[1]%100==50){
-            ctx2.fillStyle = "#FF9999";
-            ctx2.fillRect(oldx+1,oldy+1,48,48);
-        }else{
-            ctx2.fillStyle = "#FFFFFF";
-            ctx2.fillRect(oldx+1,oldy+1,48,48);
-        }
-    }else{
-        if (oldy%100==0){
-            ctx2.fillStyle = "#FF9999";
-            ctx2.fillRect(oldx+1,oldy+1,48,48);
-        }else{
-            ctx2.fillStyle = "#FFFFFF";
-            ctx2.fillRect(oldx+1,oldy+1,48,48);
-        }
-    }
-     //for resetting square color
-    var x = d['x'] - (d['x']%50);
-    var y = d['y'] - (d['y']%50);
-    ctx2.strokeStyle = "#0000FF";    
-    ctx2.strokeRect(x+2,y+2,46,46);
-    ctx2.fillStyle = "#00FF00";
-    //oldx[1] = x;
-    //oldy[1] = y;
-    $('#place').html(oldSquare + " - " + xplace[7-(x/50)] + yplace[7-(y/50)]);
-
-    if (move){
-        if (legal(BoardB[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))] , xplace[7-(x/50)] + yplace[7-(y/50)])) {
-            resetSquare(oldSquare);
-            BoardB[x/50][y/50] = BoardA[xplace.indexOf(oldSquare.substr(0,1).toUpperCase())][yplace.indexOf(oldSquare.substr(1,1))];
-            BoardB[xplace.indexOf(oldSquare.substr(0,1))][yplace.indexOf(oldSquare.substr(1,1))] = 0;
-            ctx2.fillRect(x+1,y+1,48,48);
-        }
-        move = false;
-    };
-
-    oldSquare = xplace[7-(x/50)] + yplace[7-(y/50)];
-    console.log(xplace[7-(x/50)]+yplace[7-(y/50)]);
-    ctx2.strokeStype = "#000000";
-
-    if (BoardB[x/50][y/50] != 0){
-        move = true;
-    }else{
-        move = false;
-    }
-    */
+    }		
 };
 
 var handClick = function(id){
-    $(id).on('click',function(e){
-	drop = true;
-	dropPiece = PAWN;
-	console.log("DROP IS TRUE");
-    });
+	if (id == "#hand1" || id == "#hand3"){
+		$(id).drawImage(wp,5,25,50,50);
+		$(id).drawImage(wn,5,100,50,50);
+		$(id).drawImage(wb,5,175,50,50);
+		$(id).drawImage(wr,5,250,50,50);
+		$(id).drawImage(wq,5,325,50,50);
+		if (id == "#hand1"){
+		    $(id).on('click',function(e){
+				var y = e.pageY
+				drop = true;
+				if (y >= 25 && y <= 75){
+					dropPiece = PAWN;
+				}
+				if (y >= 100 && y <= 150){
+					dropPiece = KNIGHT;
+				}
+				if (y >= 175 && y <= 225){
+					dropPiece = BISHOP;
+				}
+				if (y >= 250 && y <= 300){
+					dropPiece = ROOK;
+				}
+				if (y >= 325 && y <= 375){
+					dropPiece = QUEEN;
+				
+				console.log("DROP IS TRUE - 1");
+		    });
+		}else{
+			$(id).on('click',function(e){
+				var y = e.pageY
+				drop2 = true;
+				if (y >= 25 && y <= 75){
+					dropPiece2 = PAWN;
+				}
+				if (y >= 100 && y <= 150){
+					dropPiece2 = KNIGHT;
+				}
+				if (y >= 175 && y <= 225){
+					dropPiece2 = BISHOP;
+				}
+				if (y >= 250 && y <= 300){
+					dropPiece2 = ROOK;
+				}
+				if (y >= 325 && y <= 375){
+					dropPiece2 = QUEEN;
+				}
+				console.log("DROP IS TRUE - 2");
+		    });
+		}
+	}else{
+		$(id).drawImage(bp,5,25,50,50);
+		$(id).drawImage(bn,5,100,50,50);
+		$(id).drawImage(bb,5,175,50,50);
+		$(id).drawImage(br,5,250,50,50);
+		$(id).drawImage(bq,5,325,50,50);
+		if (id == "#hand2"){
+		    $(id).on('click',function(e){
+				var y = e.pageY
+				drop = true;
+				if (y >= 25 && y <= 75){
+					dropPiece = PAWN;
+				}
+				if (y >= 100 && y <= 150){
+					dropPiece = KNIGHT;
+				}
+				if (y >= 175 && y <= 225){
+					dropPiece = BISHOP;
+				}
+				if (y >= 250 && y <= 300){
+					dropPiece = ROOK;
+				}
+				if (y >= 325 && y <= 375){
+					dropPiece = QUEEN;
+				
+				console.log("DROP IS TRUE - 3");
+		    });
+		}else{
+			$(id).on('click',function(e){
+				var y = e.pageY
+				drop2 = true;
+				if (y >= 25 && y <= 75){
+					dropPiece2 = PAWN;
+				}
+				if (y >= 100 && y <= 150){
+					dropPiece2 = KNIGHT;
+				}
+				if (y >= 175 && y <= 225){
+					dropPiece2 = BISHOP;
+				}
+				if (y >= 250 && y <= 300){
+					dropPiece2 = ROOK;
+				}
+				if (y >= 325 && y <= 375){
+					dropPiece2 = QUEEN;
+				}
+				console.log("DROP IS TRUE - 4");
+		    });
+		}
+	}
 }
 
 var getMousePos = function(canvas, evt) {
