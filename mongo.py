@@ -23,7 +23,7 @@ def user_exists(username):
     return users.find({"username" : username}).count() > 0
 
 
-
+#insert("john","123")
 
 
 #Game Stuff
