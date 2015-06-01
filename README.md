@@ -8,14 +8,14 @@
   - [x] Board init
   - [x] Piece and board interaction
   - [ ] King, check, and endgame
-  - [ ] Dropping pieces
+  - [x] Dropping pieces
 - [ ] Set up server
   - [ ] Login
   - [ ] Multiple rooms
 - [x] Chessboard - 75%
   - [x] Board
   - [x] Highlight square + coordinates
-  - [ ] Setup
+  - [x] Setup
   - [ ] Working 2v2 site
 
 ## Description
