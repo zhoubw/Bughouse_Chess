@@ -1,6 +1,9 @@
 import pymongo
 from pymongo import MongoClient
 
-client = MongoClient()
-db = client.account_manager
-users = db.users
+client = MongoClient();
+db = client.manager;
+users = db.users;
+board = db.boards;
+
+
