@@ -520,14 +520,14 @@ function click2(e,d){
 
 var handClick = function(id){
 	if (id == "#hand1" || id == "#hand3"){
-		$(id).drawImage(wp,5,25,50,50);
-		$(id).drawImage(wn,5,100,50,50);
-		$(id).drawImage(wb,5,175,50,50);
-		$(id).drawImage(wr,5,250,50,50);
-		$(id).drawImage(wq,5,325,50,50);
+		$(id)[0].getContext('2d').drawImage(wp,5,25,50,50);
+		$(id)[0].getContext('2d').drawImage(wn,5,100,50,50);
+		$(id)[0].getContext('2d').drawImage(wb,5,175,50,50);
+		$(id)[0].getContext('2d').drawImage(wr,5,250,50,50);
+		$(id)[0].getContext('2d').drawImage(wq,5,325,50,50);
 		if (id == "#hand1"){
 		    $(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop = true;
 				if (y >= 25 && y <= 75){
 					dropPiece = PAWN;
@@ -543,12 +543,12 @@ var handClick = function(id){
 				}
 				if (y >= 325 && y <= 375){
 					dropPiece = QUEEN;
-				
+				}
 				console.log("DROP IS TRUE - 1");
 		    });
 		}else{
 			$(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop2 = true;
 				if (y >= 25 && y <= 75){
 					dropPiece2 = PAWN;
@@ -569,14 +569,14 @@ var handClick = function(id){
 		    });
 		}
 	}else{
-		$(id).drawImage(bp,5,25,50,50);
-		$(id).drawImage(bn,5,100,50,50);
-		$(id).drawImage(bb,5,175,50,50);
-		$(id).drawImage(br,5,250,50,50);
-		$(id).drawImage(bq,5,325,50,50);
+		$(id)[0].getContext('2d').drawImage(bp,5,25,50,50);
+		$(id)[0].getContext('2d').drawImage(bn,5,100,50,50);
+		$(id)[0].getContext('2d').drawImage(bb,5,175,50,50);
+		$(id)[0].getContext('2d').drawImage(br,5,250,50,50);
+		$(id)[0].getContext('2d').drawImage(bq,5,325,50,50);
 		if (id == "#hand2"){
 		    $(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop = true;
 				if (y >= 25 && y <= 75){
 					dropPiece = PAWN;
@@ -592,12 +592,12 @@ var handClick = function(id){
 				}
 				if (y >= 325 && y <= 375){
 					dropPiece = QUEEN;
-				
+				}
 				console.log("DROP IS TRUE - 3");
 		    });
 		}else{
 			$(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop2 = true;
 				if (y >= 25 && y <= 75){
 					dropPiece2 = PAWN;
