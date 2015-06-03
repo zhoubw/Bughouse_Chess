@@ -457,7 +457,7 @@ function Piece (player, color, type, board, column, row) {
 	    //checkmate will probably be called here with the checkKingSquare
 	    
 	    this.availableMoves.length = 0; //clear array of moves
-	    if (!this.checkmate()) {
+	    //if (!this.checkmate()) {
 		this.checkKingSquare(this.column, this.row+1);
 		this.checkKingSquare(this.column+1, this.row+1);
 		this.checkKingSquare(this.column+1, this.row);
@@ -466,7 +466,7 @@ function Piece (player, color, type, board, column, row) {
 		this.checkKingSquare(this.column-1, this.row-1);
 		this.checkKingSquare(this.column-1, this.row);
 		this.checkKingSquare(this.column-1, this.row+1);
-	    }
+	//}
 	    /*
 	    if (this.checkmate()) { //checkKingSquare will be called in here
 		this.availableMoves.length = 0;
