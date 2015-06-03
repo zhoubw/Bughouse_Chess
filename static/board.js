@@ -12,11 +12,14 @@ var turn = WHITE;
 var turn2 = WHITE;
 var move = false;
 var drop = false;
+var dropColor;
 var drop2 = false;
+var dropColor2;
 var dropPiece;
 var dropColor;
 var dropPiece2;
 var dropColor2;
+var finished = false;
 var selected = false;
 var selected2 = false;
 var oldCoord = [0,0];
@@ -397,10 +400,15 @@ function click1(e,d,socket){
     var y = d['y'] - (d['y']%50);
     var coord = [7-(x/50),y/50];
 
+    if (finished){
+    	alert("GAME IS FINISHED");
+    	return;
+    }
+
     //sends signal
     socket.emit('click1', {data: coord});
 
-    if (drop){
+    if (dropColor == turn){
 		console.log("DROPPING PIECE WOO");
 		if (turn == WHITE){
 		    BoardA[coord[0]][coord[1]] = new Piece(white_A,white_A.color,dropPiece,1,coord[0],coord[1]);
@@ -449,6 +457,19 @@ function click1(e,d,socket){
 		    return;//to break out of function when not moving
 		}
 		updateBoard();
+
+		if (turn == WHITE){
+			if (black_A.king.checkmate()){
+				alert("CHECKMATE");
+				finished = true;
+			}
+		}else{
+			if(white_A.king.checkmate()){
+				alert("CHECKMATE");
+				finished = true;
+			}
+		}
+
 		if (returned==-1){ //if it just moved to an empty square change turn
 		    if (turn == WHITE){
 				turn = BLACK;
@@ -458,6 +479,13 @@ function click1(e,d,socket){
 		    selected = false;
 		    return;
 		}
+		//check if the captured is a king
+		if (returned.type == KING){
+			alert("KING TAKEN");
+			finished = true;
+			return;
+		}
+
 		//if it gets up to here it's a capture
 		console.log("CAPTURED:");
 		console.log(returned);
@@ -520,99 +548,139 @@ function click2(e,d){
 
 var handClick = function(id){
 	if (id == "#hand1" || id == "#hand3"){
-		$(id).drawImage(wp,5,25,50,50);
-		$(id).drawImage(wn,5,100,50,50);
-		$(id).drawImage(wb,5,175,50,50);
-		$(id).drawImage(wr,5,250,50,50);
-		$(id).drawImage(wq,5,325,50,50);
+		$(id)[0].getContext('2d').drawImage(wp,5,25,50,50);
+		$(id)[0].getContext('2d').drawImage(wn,5,100,50,50);
+		$(id)[0].getContext('2d').drawImage(wb,5,175,50,50);
+		$(id)[0].getContext('2d').drawImage(wr,5,250,50,50);
+		$(id)[0].getContext('2d').drawImage(wq,5,325,50,50);
 		if (id == "#hand1"){
 		    $(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop = true;
 				if (y >= 25 && y <= 75){
 					dropPiece = PAWN;
+					console.log("PAWN");
+					dropColor = WHITE;
 				}
 				if (y >= 100 && y <= 150){
 					dropPiece = KNIGHT;
+					console.log("KNIGHT");
+					dropColor = WHITE;
 				}
 				if (y >= 175 && y <= 225){
 					dropPiece = BISHOP;
+					console.log("BISHOP");
+					dropColor = WHITE;
 				}
 				if (y >= 250 && y <= 300){
 					dropPiece = ROOK;
+					console.log("ROOK");
+					dropColor = WHITE;
 				}
 				if (y >= 325 && y <= 375){
 					dropPiece = QUEEN;
-				
+					console.log("QUEEN");
+					dropColor = WHITE;
+				}
 				console.log("DROP IS TRUE - 1");
 		    });
 		}else{
 			$(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop2 = true;
 				if (y >= 25 && y <= 75){
 					dropPiece2 = PAWN;
+					console.log("PAWN");
+					dropColor2 = WHITE;
 				}
 				if (y >= 100 && y <= 150){
 					dropPiece2 = KNIGHT;
+					console.log("KNIGHT");
+					dropColor2 = WHITE;
 				}
 				if (y >= 175 && y <= 225){
 					dropPiece2 = BISHOP;
+					console.log("BISHOP");
+					dropColor2 = WHITE;
 				}
 				if (y >= 250 && y <= 300){
 					dropPiece2 = ROOK;
+					console.log("ROOK");
+					dropColor2 = WHITE;
 				}
 				if (y >= 325 && y <= 375){
 					dropPiece2 = QUEEN;
+					console.log("QUEEN");
+					dropColor2 = WHITE;
 				}
 				console.log("DROP IS TRUE - 2");
 		    });
 		}
 	}else{
-		$(id).drawImage(bp,5,25,50,50);
-		$(id).drawImage(bn,5,100,50,50);
-		$(id).drawImage(bb,5,175,50,50);
-		$(id).drawImage(br,5,250,50,50);
-		$(id).drawImage(bq,5,325,50,50);
+		$(id)[0].getContext('2d').drawImage(bp,5,25,50,50);
+		$(id)[0].getContext('2d').drawImage(bn,5,100,50,50);
+		$(id)[0].getContext('2d').drawImage(bb,5,175,50,50);
+		$(id)[0].getContext('2d').drawImage(br,5,250,50,50);
+		$(id)[0].getContext('2d').drawImage(bq,5,325,50,50);
 		if (id == "#hand2"){
 		    $(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop = true;
 				if (y >= 25 && y <= 75){
 					dropPiece = PAWN;
+					console.log("PAWN");
+					dropColor = BLACK;
 				}
 				if (y >= 100 && y <= 150){
 					dropPiece = KNIGHT;
+					console.log("KNIGHT");
+					dropColor = BLACK;
 				}
 				if (y >= 175 && y <= 225){
 					dropPiece = BISHOP;
+					console.log("BISHOP");
+					dropColor = BLACK;
 				}
 				if (y >= 250 && y <= 300){
 					dropPiece = ROOK;
+					console.log("ROOK");
+					dropColor = BLACK;
 				}
 				if (y >= 325 && y <= 375){
 					dropPiece = QUEEN;
-				
+					console.log("QUEEN");
+					dropColor = BLACK;
+				}
 				console.log("DROP IS TRUE - 3");
 		    });
 		}else{
 			$(id).on('click',function(e){
-				var y = e.pageY
+				var y = e.pageY - 50;
 				drop2 = true;
 				if (y >= 25 && y <= 75){
 					dropPiece2 = PAWN;
+					console.log("PAWN");
+					dropColor2 = BLACK;
 				}
 				if (y >= 100 && y <= 150){
 					dropPiece2 = KNIGHT;
+					console.log("KNIGHT");
+					dropColor2 = BLACK;
 				}
 				if (y >= 175 && y <= 225){
 					dropPiece2 = BISHOP;
+					console.log("BISHOP");
+					dropColor2 = BLACK;
 				}
 				if (y >= 250 && y <= 300){
 					dropPiece2 = ROOK;
+					console.log("ROOK");
+					dropColor2 = BLACK;
 				}
 				if (y >= 325 && y <= 375){
 					dropPiece2 = QUEEN;
+					console.log("QUEEN");
+					dropColor2 = BLACK;
 				}
 				console.log("DROP IS TRUE - 4");
 		    });
