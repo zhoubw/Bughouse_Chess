@@ -406,7 +406,7 @@ function click1(e,d,socket){
     }
 
     //sends signal
-    socket.emit('click1', {data: coord});
+    socket.emit('click1', {'data': coord});
 
     if (dropColor == turn){
 	console.log("DROPPING PIECE WOO");
@@ -469,7 +469,7 @@ function click1(e,d,socket){
 	if (returned==-1){ //if it just moved to an empty square change turn
 	    if (turn == WHITE){
 		if (black_A.king.checkmate()){
-		    socket.emit("CHECKMATED ON BOARD 1");
+		socket.emit('click1',{'data':"CHECKMATED ON BOARD 1"});
 		    alert("CHECKMATE");
 		    finished = true;
 		    return;
@@ -477,7 +477,7 @@ function click1(e,d,socket){
 		turn = BLACK;
 	    }else{
 		if(white_A.king.checkmate()){
-		    socket.emit("CHECKMATED ON BOARD 1");
+		socket.emit('click1',{'data':"CHECKMATED ON BOARD 1"});
 		    alert("CHECKMATE");
 		    finished = true;
 		    return;
@@ -489,7 +489,7 @@ function click1(e,d,socket){
 	}
 	//check if the captured is a king
 	if (returned.type == KING){
-	    socket.emit("KING TAKEN ON BOARD 1");
+	    socket.emit('click1',{'data':"KING TAKEN ON BOARD 1"});
 	    alert("KING TAKEN");
 	    finished = true;
 	    return;
@@ -500,7 +500,7 @@ function click1(e,d,socket){
 	selected = false;
 	if (turn==WHITE){
 	    if (black_A.king.checkmate()){
-		socket.emit("CHECKMATED ON BOARD 1");
+		socket.emit('click1',{'data':"CHECKMATED ON BOARD 1"});
 		alert("CHECKMATE");
 		finished = true;
 		return;
@@ -508,7 +508,7 @@ function click1(e,d,socket){
 	    turn = BLACK;
 	}else{
 	    if (white_B.king.checkmate()){
-		socket.emit("CHECKMATED ON BOARD 1");
+		socket.emit('click1',{'data':"CHECKMATED ON BOARD 1"});
 		alert("CHECKMATE");
 		finished = true;
 		return;
