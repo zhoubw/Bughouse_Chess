@@ -51,7 +51,7 @@ def test_disconnect():
 
 @socketio.on('click1', namespace='')
 def test_click1(message):
-    print message
+    print message['data']
     
 if __name__ == '__main__':
     #socketio.run(app)

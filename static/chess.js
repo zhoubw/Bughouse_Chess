@@ -51,7 +51,13 @@ function Player (color, position, opponent, partner) {
     this.color = color;
     this.king = -1;
     
-    this.spare = [];
+    this.spare = {
+	PAWN: 0,
+	QUEEN: 0,
+	KNIGHT: 0,
+	BISHOP: 0,
+	ROOK: 0
+    };
     this.time = 180.0;
 
     this.setOpponent = function(o) {
@@ -135,15 +141,17 @@ function Piece (player, color, type, board, column, row) {
 	    var square = this.availableMoves[i];
 	    if (square[0] == column && square[1] == row) {
 		if (square[2] == CAPTURE) {
-		    b[square[0]][square[1]].column = -1;
-		    b[square[0]][square[1]].row = -1;
-		    this.player.partner.spare.push(b[square[0]][square[1]]);
+		    //b[square[0]][square[1]].column = -1;
+		    //b[square[0]][square[1]].row = -1;
+		    //this.player.partner.spare.push(b[square[0]][square[1]]);
+		    this.player.partner.spare[target.type] += 1;
 		    b[square[0]][square[1]] = 0;
 		}
 		if (square[2] == EN_PASSANT) {
-		    b[square[0]][square[1]-this.direction].column = -1;
-		    b[square[0]][square[1]-this.direction].row = -1;
-		    this.player.partner.spare.push(b[square[0]][square[1]-this.direction]);
+		    //b[square[0]][square[1]-this.direction].column = -1;
+		    //b[square[0]][square[1]-this.direction].row = -1;
+		    //this.player.partner.spare.push(b[square[0]][square[1]-this.direction]);
+		    this.player.partner.spare[target.type] += 1;
 		    b[square[0]][square[1]-this.direction] = 0;
 		}
 		var oldColumn = this.column;
