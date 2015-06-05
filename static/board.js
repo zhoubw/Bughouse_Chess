@@ -520,7 +520,7 @@ function click1(e,d,socket){
 
 
 
-function click2(e,d){
+function click2(e,d,socket){
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
     var coord = [x/50,7-(y/50)];
