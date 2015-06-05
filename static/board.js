@@ -495,8 +495,8 @@ function click1(e,d,socket){
 	    return;
 	}
 	//if it gets up to here it's a capture
-	socket.emit("CAPTURED ON BOARD 1:");
-	socket.emit(returned.color + returned.type);
+	socket.emit('click1',{'data':"CAPTURED ON BOARD 1:"});
+	socket.emit('click1',{'data':returned.color + returned.type});
 	selected = false;
 	if (turn==WHITE){
 	    if (black_A.king.checkmate()){
@@ -530,7 +530,7 @@ function click2(e,d){
 	return;
     }
 
-    socket.emit('click2', {data:coord});
+    socket.emit('click2', {'data':coord});
     
     if (dropColor2 == turn2){
     	console.log("DROPPING ON SECOND BOARD");
@@ -590,7 +590,7 @@ function click2(e,d){
 	if (returned == -1){
 	    if (turn == WHITE){
 		if (black_B.king.checkmate()){
-		    socket.emit("CHECKMATED ON BOARD 2");
+		    socket.emit('click2',{'data':"CHECKMATED ON BOARD 2"});
 		    alert("CHECKMATE");
 		    finished = true;
 		    return;
@@ -598,7 +598,7 @@ function click2(e,d){
 		turn = BLACK;
 	    }else{
 		if (white_B.king.checkmate()){
-		    socket.emit("CHECKMATED ON BOARD 2");
+		    socket.emit('click2',{'data':"CHECKMATED ON BOARD 2"});
 		    alert("CHECKMATE");
 		    finished = true;
 		    return;
@@ -610,19 +610,19 @@ function click2(e,d){
 	}
 
 	if (returned.type == KING){
-	    socket.emit("KING TAKEN ON BOARD 2");
+	    socket.emit('click2',{'data':"KING TAKEN ON BOARD 2"});
 	    alert("KING TAKEN");
 	    finished = true;
 	    return;
 	}
 	
 	//for captures
-	socket.emit("CAPTURED ON BOARD 2:");
-	socket.emit(returned.color + returned.type);
+	socket.emit('click2',{'data':"CAPTURED ON BOARD 2:"});
+	socket.emit('click2',{'data':returned.color + returned.type});
 	selected = false;
 	if (turn == WHITE){
 	    if (black_B.king.checkmate()){
-		socket.emit("CHECKMATED ON BOARD 2");
+		socket.emit('click2',{'data':"CHECKMATED ON BOARD 2"});
 		alert("CHECKMATE");
 		finished = true;
 		return;
@@ -630,7 +630,7 @@ function click2(e,d){
 	    turn = BLACK;
 	}else{
 	    if (white_B.king.checkmate()){
-		socket.emit("CHECKMATED ON BOARD 2");
+		socket.emit('click2',{'data':"CHECKMATED ON BOARD 2"});
 		alert("CHECKMATE");
 		finished = true;
 		return;

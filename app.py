@@ -52,6 +52,10 @@ def test_disconnect():
 @socketio.on('click1', namespace='')
 def test_click1(message):
     print message
+
+@socketio.on('click2', namespace='')
+def test_click2(message):
+    print message
     
 if __name__ == '__main__':
     #socketio.run(app)
