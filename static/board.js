@@ -409,94 +409,112 @@ function click1(e,d,socket){
     socket.emit('click1', {data: coord});
 
     if (dropColor == turn){
-		console.log("DROPPING PIECE WOO");
-		if (turn == WHITE){
-		    BoardA[coord[0]][coord[1]] = new Piece(white_A,white_A.color,dropPiece,1,coord[0],coord[1]);
-		}else{
-		    BoardA[coord[0]][coord[1]] = new Piece(black_A,black_A.color,dropPiece,1,coord[0],coord[1]);
-		}
-		updateBoard();
-		drop = false;
-		if (turn == WHITE){
-		    turn = BLACK;
-		}else{
-		    turn = WHITE;
-		}
-		return;
+	console.log("DROPPING PIECE WOO");
+	if (turn == WHITE){
+	    BoardA[coord[0]][coord[1]] = new Piece(white_A,white_A.color,dropPiece,1,coord[0],coord[1]);
+	}else{
+	    BoardA[coord[0]][coord[1]] = new Piece(black_A,black_A.color,dropPiece,1,coord[0],coord[1]);
+	}
+	updateBoard();
+	drop = false;
+	if (turn == WHITE){
+	    if (black_A.king.checkmate()){
+		alert("CHECKMATE");
+		finished = true;
+	    }
+	    turn = BLACK;
+	}else{
+	    if(white_A.king.checkmate()){
+		alert("CHECKMATE");
+		finished = true;
+	    }
+	    turn = WHITE;
+	}
+	return;
     }
     
     if (!selected){
-		if (isSquareEmpty(1,coord[0],coord[1])){
-		    return;
-		}
-		if (BoardA[coord[0]][coord[1]].color==turn){
-		    updateBoard();
-		    hMoves(BoardA[coord[0]][coord[1]]);
-		    oldCoord=coord;
-	    	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
-		    selected = true;	    
-		}else{
-		    selected = false;
-		}
+	if (isSquareEmpty(1,coord[0],coord[1])){
+	    return;
+	}
+	if (BoardA[coord[0]][coord[1]].color==turn){
+	    updateBoard();
+	    hMoves(BoardA[coord[0]][coord[1]]);
+	    oldCoord=coord;
+	    oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
+	    selected = true;	    
+	}else{
+	    selected = false;
+	}
     }else{
-		//if works -> move piece, reset square, draw piece
-		//if works -> turn = the other one
-		//if doesnt work -> change selected
-		var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
-		var returned = old_piece.move(coord[0],coord[1]);
-		if (returned == false){//illegal move
-		    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
-				updateBoard();
-				hMoves(BoardA[coord[0]][coord[1]]);
-				oldCoord=coord;	
-		    	oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
-				selected = true;
-		    }else{
-				selected = false;
-		    }
-		    return;//to break out of function when not moving
-		}
+	//if works -> move piece, reset square, draw piece
+	//if works -> turn = the other one
+	//if doesnt work -> change selected
+	var old_piece = BoardA[oldCoord[0]][oldCoord[1]]; 
+	var returned = old_piece.move(coord[0],coord[1]);
+	if (returned == false){//illegal move
+	    if (BoardA[coord[0]][coord[1]] != 0 && BoardA[coord[0]][coord[1]].color == turn){//if same color as the turn rehighlight
 		updateBoard();
-
-		if (turn == WHITE){
-			if (black_A.king.checkmate()){
-				alert("CHECKMATE");
-				finished = true;
-			}
-		}else{
-			if(white_A.king.checkmate()){
-				alert("CHECKMATE");
-				finished = true;
-			}
-		}
-
-		if (returned==-1){ //if it just moved to an empty square change turn
-		    if (turn == WHITE){
-				turn = BLACK;
-		    }else{
-				turn = WHITE;
-		    }
-		    selected = false;
+		hMoves(BoardA[coord[0]][coord[1]]);
+		oldCoord=coord;	
+		oldSquare = xplace[7-coord[0]].toLowerCase() + yplace[coord[1]];	
+		selected = true;
+	    }else{
+		selected = false;
+	    }
+	    return;//to break out of function when not moving
+	}
+	updateBoard();
+	
+	if (returned==-1){ //if it just moved to an empty square change turn
+	    if (turn == WHITE){
+		if (black_A.king.checkmate()){
+		    socket.emit("CHECKMATED ON BOARD 1");
+		    alert("CHECKMATE");
+		    finished = true;
 		    return;
 		}
-		//check if the captured is a king
-		if (returned.type == KING){
-			alert("KING TAKEN");
-			finished = true;
-			return;
+		turn = BLACK;
+	    }else{
+		if(white_A.king.checkmate()){
+		    socket.emit("CHECKMATED ON BOARD 1");
+		    alert("CHECKMATE");
+		    finished = true;
+		    return;
 		}
-
-		//if it gets up to here it's a capture
-		console.log("CAPTURED:");
-		console.log(returned);
-		console.log("");
-		console.log("");
-		selected = false;
-		if (turn==WHITE){
-		    turn = BLACK;
-		}else{
-		    turn = WHITE;
-		}
+		turn = WHITE;
+	    }
+	    selected = false;
+	    return;
+	}
+	//check if the captured is a king
+	if (returned.type == KING){
+	    socket.emit("KING TAKEN ON BOARD 1");
+	    alert("KING TAKEN");
+	    finished = true;
+	    return;
+	}
+	//if it gets up to here it's a capture
+	socket.emit("CAPTURED ON BOARD 1:");
+	socket.emit(returned.color + returned.type);
+	selected = false;
+	if (turn==WHITE){
+	    if (black_A.king.checkmate()){
+		socket.emit("CHECKMATED ON BOARD 1");
+		alert("CHECKMATE");
+		finished = true;
+		return;
+	    }
+	    turn = BLACK;
+	}else{
+	    if (white_B.king.checkmate()){
+		socket.emit("CHECKMATED ON BOARD 1");
+		alert("CHECKMATE");
+		finished = true;
+		return;
+	    }
+	    turn = WHITE;
+	}
     }
 }
 
@@ -505,187 +523,263 @@ function click1(e,d,socket){
 function click2(e,d){
     var x = d['x'] - (d['x']%50);
     var y = d['y'] - (d['y']%50);
-    var coord2 = [x/50,7-(y/50)];
-    
-    if (drop2){
+    var coord = [x/50,7-(y/50)];
 
+    if (finished){
+	alert("GAME IS FINISHED");
+	return;
+    }
+
+    socket.emit('click2', {data:coord});
+    
+    if (dropColor2 == turn2){
     	console.log("DROPPING ON SECOND BOARD");
+	if (turn2 == WHITE){
+	    BoardB[coord[0]][coord[1]] = new Piece(white_B,white_B.color,dropPiece2,2,coord[0],coord[1]);
+	    if (black_B.king.checkmate()){
+		alert("CHECKMATE");
+		finished = true;
+		return;
+	    }
+	    turn = BLACK;
+	}else{
+	    BoardB[coord[0]][coord[1]] = new Piece(black_B,black_B.color,dropPiece2,2,coord[0],coord[1]);
+	    if (white_B.king.checkmate()){
+		alert("CHECKMATE");
+		finished = true;
+		return;
+	    }
+	    turn = WHITE;
+	}
+	updateBoard();
+	drop2 = false;
+	return;
     }
 
     if (!selected2){
-		console.log("not selected 2");
-		if (isSquareEmpty(2,coord2[0],coord2[1])){
-			console.log("empty")
-	    	return;
-		}
-		if (BoardB[coord2[0]][coord2[1]].color==turn2){
-		    //hMoves(BoardA[coord[0]][coord[1]]);
-		    oldCoord2 = coord2;
-		    oldSquare2 = xplace[7-coord2[0]] + yplace[coord2[1]];
-		    selected2 = true;
-		}else{
-		    selected2 = false;
-		}
+	if (isSquareEmpty(2,coord[0],coord[1])){
+	    return;
+	}
+	if (BoardB[coord[0]][coord[1]].color==turn2){
+	    updateBoard();
+	    hMoves(BoardB[coord[0]][coord[1]]);
+	    oldCoord2 = coord;
+	    oldSquare2 = xplace[7-coord[0]] + yplace[coord[1]];
+	    selected = true;
+	}else{
+	    selected2 = false;
+	}
     }else{
-		console.log("selected 2");
-		if (BoardB[oldCoord2[0]][oldCoord2[1]].move(coord2[0],coord2[1])){
-		    console.log("MOVED 2");
-		    resetSquare(oldSquare2);
-		    resetSquare(xplace[7-coord2[0]] + yplace[coord2[1]]);
-		    drawPiece(BoardB[coord2[0]][coord2[1]]);
-		    if (turn2 == WHITE){
-				turn2 = BLACK;
-		    }else{
-				turn2 = WHITE;
-		    }
-		    selected2 = false;
-		}else{
-		    console.log("NOT MOVING");
+	var old_piece = BoardB[oldCoord2[0]][oldCoord2[1]];
+	var returned = old_piece.move(coord[0],coord[1]);
+	if (returned == false){
+	    if (BoardB[coord[0]][coord[1]] != 0 && BoardB[coord[0]][coord[1]].color == turn){
+		updateBoard();
+		hMoves(BoardB[coord[0]][coord[1]]);
+		oldCoord2 = coord;
+		oldSquare2 = xplace[7-coord[0]] + yplace[coord[1]];
+		selected = true;
+	    }else{
+		selected = false;
+	    }
+	    return;
+	}
+	
+	updateBoard();
+
+	if (returned == -1){
+	    if (turn == WHITE){
+		if (black_B.king.checkmate()){
+		    socket.emit("CHECKMATED ON BOARD 2");
+		    alert("CHECKMATE");
+		    finished = true;
+		    return;
 		}
-		selected2 = false;
-    }		
+		turn = BLACK;
+	    }else{
+		if (white_B.king.checkmate()){
+		    socket.emit("CHECKMATED ON BOARD 2");
+		    alert("CHECKMATE");
+		    finished = true;
+		    return;
+		}
+		turn = WHITE;
+	    }
+	    selected = false;
+	    return;
+	}
+
+	if (returned.type == KING){
+	    socket.emit("KING TAKEN ON BOARD 2");
+	    alert("KING TAKEN");
+	    finished = true;
+	    return;
+	}
+	
+	//for captures
+	socket.emit("CAPTURED ON BOARD 2:");
+	socket.emit(returned.color + returned.type);
+	selected = false;
+	if (turn == WHITE){
+	    if (black_B.king.checkmate()){
+		socket.emit("CHECKMATED ON BOARD 2");
+		alert("CHECKMATE");
+		finished = true;
+		return;
+	    }
+	    turn = BLACK;
+	}else{
+	    if (white_B.king.checkmate()){
+		socket.emit("CHECKMATED ON BOARD 2");
+		alert("CHECKMATE");
+		finished = true;
+		return;
+	    }
+	    turn = WHITE;
+	}
+    }
 };
 
 var handClick = function(id){
-	if (id == "#hand1" || id == "#hand3"){
-		$(id)[0].getContext('2d').drawImage(wp,5,25,50,50);
-		$(id)[0].getContext('2d').drawImage(wn,5,100,50,50);
-		$(id)[0].getContext('2d').drawImage(wb,5,175,50,50);
-		$(id)[0].getContext('2d').drawImage(wr,5,250,50,50);
-		$(id)[0].getContext('2d').drawImage(wq,5,325,50,50);
-		if (id == "#hand1"){
-		    $(id).on('click',function(e){
-				var y = e.pageY - 50;
-				drop = true;
-				if (y >= 25 && y <= 75){
-					dropPiece = PAWN;
-					console.log("PAWN");
-					dropColor = WHITE;
-				}
-				if (y >= 100 && y <= 150){
-					dropPiece = KNIGHT;
-					console.log("KNIGHT");
-					dropColor = WHITE;
-				}
-				if (y >= 175 && y <= 225){
-					dropPiece = BISHOP;
-					console.log("BISHOP");
-					dropColor = WHITE;
-				}
-				if (y >= 250 && y <= 300){
-					dropPiece = ROOK;
-					console.log("ROOK");
-					dropColor = WHITE;
-				}
-				if (y >= 325 && y <= 375){
-					dropPiece = QUEEN;
-					console.log("QUEEN");
-					dropColor = WHITE;
-				}
-				console.log("DROP IS TRUE - 1");
-		    });
-		}else{
-			$(id).on('click',function(e){
-				var y = e.pageY - 50;
-				drop2 = true;
-				if (y >= 25 && y <= 75){
-					dropPiece2 = PAWN;
-					console.log("PAWN");
-					dropColor2 = WHITE;
-				}
-				if (y >= 100 && y <= 150){
-					dropPiece2 = KNIGHT;
-					console.log("KNIGHT");
-					dropColor2 = WHITE;
-				}
-				if (y >= 175 && y <= 225){
-					dropPiece2 = BISHOP;
-					console.log("BISHOP");
-					dropColor2 = WHITE;
-				}
-				if (y >= 250 && y <= 300){
-					dropPiece2 = ROOK;
-					console.log("ROOK");
-					dropColor2 = WHITE;
-				}
-				if (y >= 325 && y <= 375){
-					dropPiece2 = QUEEN;
-					console.log("QUEEN");
-					dropColor2 = WHITE;
-				}
-				console.log("DROP IS TRUE - 2");
-		    });
+    if (id == "#hand1" || id == "#hand3"){
+	$(id)[0].getContext('2d').drawImage(wp,5,25,50,50);
+	$(id)[0].getContext('2d').drawImage(wn,5,100,50,50);
+	$(id)[0].getContext('2d').drawImage(wb,5,175,50,50);
+	$(id)[0].getContext('2d').drawImage(wr,5,250,50,50);
+	$(id)[0].getContext('2d').drawImage(wq,5,325,50,50);
+	if (id == "#hand1"){
+	    $(id).on('click',function(e){
+		var y = e.pageY - 50;
+		drop = true;
+		if (y >= 25 && y <= 75){
+		    dropPiece = PAWN;
+		    console.log("PAWN");
+		    dropColor = WHITE;
 		}
+		if (y >= 100 && y <= 150){
+		    dropPiece = KNIGHT;
+		    console.log("KNIGHT");
+		    dropColor = WHITE;
+		}
+		if (y >= 175 && y <= 225){
+		    dropPiece = BISHOP;
+		    console.log("BISHOP");
+		    dropColor = WHITE;
+		}
+		if (y >= 250 && y <= 300){
+		    dropPiece = ROOK;
+		    console.log("ROOK");
+		    dropColor = WHITE;
+		}
+		if (y >= 325 && y <= 375){
+		    dropPiece = QUEEN;
+		    console.log("QUEEN");
+		    dropColor = WHITE;
+		}
+		console.log("DROP IS TRUE - 1");
+	    });
 	}else{
-		$(id)[0].getContext('2d').drawImage(bp,5,25,50,50);
-		$(id)[0].getContext('2d').drawImage(bn,5,100,50,50);
-		$(id)[0].getContext('2d').drawImage(bb,5,175,50,50);
-		$(id)[0].getContext('2d').drawImage(br,5,250,50,50);
-		$(id)[0].getContext('2d').drawImage(bq,5,325,50,50);
-		if (id == "#hand2"){
-		    $(id).on('click',function(e){
-				var y = e.pageY - 50;
-				drop = true;
-				if (y >= 25 && y <= 75){
-					dropPiece = PAWN;
-					console.log("PAWN");
-					dropColor = BLACK;
-				}
-				if (y >= 100 && y <= 150){
-					dropPiece = KNIGHT;
-					console.log("KNIGHT");
-					dropColor = BLACK;
-				}
-				if (y >= 175 && y <= 225){
-					dropPiece = BISHOP;
-					console.log("BISHOP");
-					dropColor = BLACK;
-				}
-				if (y >= 250 && y <= 300){
-					dropPiece = ROOK;
-					console.log("ROOK");
-					dropColor = BLACK;
-				}
-				if (y >= 325 && y <= 375){
-					dropPiece = QUEEN;
-					console.log("QUEEN");
-					dropColor = BLACK;
-				}
-				console.log("DROP IS TRUE - 3");
-		    });
-		}else{
-			$(id).on('click',function(e){
-				var y = e.pageY - 50;
-				drop2 = true;
-				if (y >= 25 && y <= 75){
-					dropPiece2 = PAWN;
-					console.log("PAWN");
-					dropColor2 = BLACK;
-				}
-				if (y >= 100 && y <= 150){
-					dropPiece2 = KNIGHT;
-					console.log("KNIGHT");
-					dropColor2 = BLACK;
-				}
-				if (y >= 175 && y <= 225){
-					dropPiece2 = BISHOP;
-					console.log("BISHOP");
-					dropColor2 = BLACK;
-				}
-				if (y >= 250 && y <= 300){
-					dropPiece2 = ROOK;
-					console.log("ROOK");
-					dropColor2 = BLACK;
-				}
-				if (y >= 325 && y <= 375){
-					dropPiece2 = QUEEN;
-					console.log("QUEEN");
-					dropColor2 = BLACK;
-				}
-				console.log("DROP IS TRUE - 4");
-		    });
+	    $(id).on('click',function(e){
+		var y = e.pageY - 50;
+		drop2 = true;
+		if (y >= 25 && y <= 75){
+		    dropPiece2 = PAWN;
+		    console.log("PAWN");
+		    dropColor2 = WHITE;
 		}
+		if (y >= 100 && y <= 150){
+		    dropPiece2 = KNIGHT;
+		    console.log("KNIGHT");
+		    dropColor2 = WHITE;
+		}
+		if (y >= 175 && y <= 225){
+		    dropPiece2 = BISHOP;
+		    console.log("BISHOP");
+		    dropColor2 = WHITE;
+		}
+		if (y >= 250 && y <= 300){
+		    dropPiece2 = ROOK;
+		    console.log("ROOK");
+		    dropColor2 = WHITE;
+		}
+		if (y >= 325 && y <= 375){
+		    dropPiece2 = QUEEN;
+		    console.log("QUEEN");
+		    dropColor2 = WHITE;
+		}
+		console.log("DROP IS TRUE - 2");
+	    });
 	}
+    }else{
+	$(id)[0].getContext('2d').drawImage(bp,5,25,50,50);
+	$(id)[0].getContext('2d').drawImage(bn,5,100,50,50);
+	$(id)[0].getContext('2d').drawImage(bb,5,175,50,50);
+	$(id)[0].getContext('2d').drawImage(br,5,250,50,50);
+	$(id)[0].getContext('2d').drawImage(bq,5,325,50,50);
+	if (id == "#hand2"){
+	    $(id).on('click',function(e){
+		var y = e.pageY - 50;
+		drop = true;
+		if (y >= 25 && y <= 75){
+		    dropPiece = PAWN;
+		    console.log("PAWN");
+		    dropColor = BLACK;
+		}
+		if (y >= 100 && y <= 150){
+		    dropPiece = KNIGHT;
+		    console.log("KNIGHT");
+		    dropColor = BLACK;
+		}
+		if (y >= 175 && y <= 225){
+		    dropPiece = BISHOP;
+		    console.log("BISHOP");
+		    dropColor = BLACK;
+		}
+		if (y >= 250 && y <= 300){
+		    dropPiece = ROOK;
+		    console.log("ROOK");
+		    dropColor = BLACK;
+		}
+		if (y >= 325 && y <= 375){
+		    dropPiece = QUEEN;
+		    console.log("QUEEN");
+		    dropColor = BLACK;
+		}
+		console.log("DROP IS TRUE - 3");
+	    });
+	}else{
+	    $(id).on('click',function(e){
+		var y = e.pageY - 50;
+		drop2 = true;
+		if (y >= 25 && y <= 75){
+		    dropPiece2 = PAWN;
+		    console.log("PAWN");
+		    dropColor2 = BLACK;
+		}
+		if (y >= 100 && y <= 150){
+		    dropPiece2 = KNIGHT;
+		    console.log("KNIGHT");
+		    dropColor2 = BLACK;
+		}
+		if (y >= 175 && y <= 225){
+		    dropPiece2 = BISHOP;
+		    console.log("BISHOP");
+		    dropColor2 = BLACK;
+		}
+		if (y >= 250 && y <= 300){
+		    dropPiece2 = ROOK;
+		    console.log("ROOK");
+		    dropColor2 = BLACK;
+		}
+		if (y >= 325 && y <= 375){
+		    dropPiece2 = QUEEN;
+		    console.log("QUEEN");
+		    dropColor2 = BLACK;
+		}
+		console.log("DROP IS TRUE - 4");
+	    });
+	}
+    }
 }
 
 var getMousePos = function(canvas, evt) {
