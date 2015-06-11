@@ -23,10 +23,14 @@
 
 ## How to Install and Run
 * Git clone
-        https://github.com/zhoubw/Bughouse_Chess.git
+
+               https://github.com/zhoubw/Bughouse_Chess.git
+
 * Run app.py in terminal
 * Open a browser and go to
-        127.0.0.1:5000
+
+               127.0.0.1:5000
+
 * Start playing
 
 ## Description
