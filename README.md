@@ -1,6 +1,6 @@
 # Bughouse Chess
 ##Softdev Term 2 Final Project - Bughouse Chess Client
-* Barak Zhou, Albert Yeung, Jason Lu
+* [Barak Zhou](https://github.com/zhoubw), [Albert Yeung](https://github.com/alb-yeung), [Jason Lu](https://github.com/jasonluX13)
 
 ##Video
 [Project Video](https://www.youtube.com/watch?v=riMIDWRoh6g)
@@ -13,7 +13,8 @@
   - [x] Piece and board interaction
   - [x] King, check, and endgame
   - [x] Dropping pieces
-- [ ] Set up server
+- [ ] Fully set up server
+  - [x] Basic information sending between server and client
   - [ ] Login
   - [ ] Multiple rooms
 - [x] Chessboard
