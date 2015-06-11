@@ -2,21 +2,32 @@
 ##Softdev Term 2 Final Project - Bughouse Chess Client
 * Barak Zhou, Albert Yeung, Jason Lu
 
+##Video
+[Project Video](https://www.youtube.com/watch?v=riMIDWRoh6g)
+
 - [x] Chess engine
   - [x] Minor pieces
   - [x] Player
   - [x] Board init
   - [x] Piece and board interaction
-  - [ ] King, check, and endgame
+  - [x] King, check, and endgame
   - [x] Dropping pieces
 - [ ] Set up server
   - [ ] Login
   - [ ] Multiple rooms
-- [x] Chessboard - 75%
+- [x] Chessboard
   - [x] Board
   - [x] Highlight square + coordinates
   - [x] Setup
   - [ ] Working 2v2 site
+
+## How to Install and Run
+* Git clone
+        https://github.com/zhoubw/Bughouse_Chess.git
+* Run app.py in terminal
+* Open a browser and go to
+        127.0.0.1:5000
+* Start playing
 
 ## Description
 * Bughouse chess is a chess variation that involves four players in teams of two and two boards.
