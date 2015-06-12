@@ -1,7 +1,7 @@
 from flask import Flask,request,url_for,redirect,render_template,session,flash
 from flask.ext.socketio import SocketIO, emit
 
-import mongo
+import mongo as db
 # http://blog.miguelgrinberg.com/post/easy-websockets-with-flask-and-gevent
 # FOLLOW THIS
 # https://community.webfaction.com/questions/14602/handshake-error-socket-io
@@ -22,9 +22,13 @@ def signup():
     if request.method == "GET":
         return render_template('signup.html');
     elif request.method == "POST":
-        username = request.form.get("name", None)
-        password = request.form.get("password", None)
-        mongo.insert(name,password)
+        print request.form
+        username = request.form["name"]
+        password = request.form["password"]
+        print username
+        print password
+        db.insert(username,password)
+        print "past mongo"
         return render_template('login.html');
         
 

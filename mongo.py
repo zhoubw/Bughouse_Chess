@@ -10,12 +10,14 @@ board = db.boards
 #Login Stuff
 
 def insert(username, password):
+    print "hello"
     if (not user_exists(username)):
         new_user = {
             "username" : username,
             "password" : password
         }
         users.insert(new_user)
+        return True
     else:
         print("User exists")
         
