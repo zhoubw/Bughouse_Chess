@@ -5,24 +5,6 @@
 ##Video
 [Project Video](https://www.youtube.com/watch?v=riMIDWRoh6g)
 
-##Amount of Work Done
-- [x] Chess engine
-  - [x] Minor pieces
-  - [x] Player
-  - [x] Board init
-  - [x] Piece and board interaction
-  - [x] King, check, and endgame
-  - [x] Dropping pieces
-- [ ] Fully set up server
-  - [x] Basic information sending between server and client
-  - [ ] Login
-  - [ ] Multiple rooms
-- [x] Chessboard
-  - [x] Board
-  - [x] Highlight square + coordinates
-  - [x] Setup
-  - [ ] Working 2v2 site
-
 ## How to Install and Run
 * Git clone
 
@@ -46,7 +28,6 @@
 * If a promoted pawn is captured, it reverts into a pawn.
 
 ## Usage and Features
-* TBD!!!!!
 * On the main site, there will be many rooms. Each room will have four slots for players to join.
 * The game can start when four players fill up a room.
 * All game data is stored on an external database.
